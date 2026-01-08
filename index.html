@@ -359,10 +359,11 @@
             opacity: 1;
         }
 
-        /* Drawing canvas */
+        /* Drawing canvas - 改为 absolute 定位，跟随文档滚动 */
         .drawing-canvas {
-            position: fixed;
-            inset: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
             z-index: 100;
             pointer-events: none;
             cursor: crosshair;
@@ -1766,6 +1767,8 @@
         <button id="penThin" class="active" title="细笔" style="font-size: 10px; font-weight: bold;">细</button>
         <button id="penThick" title="粗笔" style="font-size: 10px; font-weight: bold;">粗</button>
         <div class="divider"></div>
+        <button id="highlighterMode" title="荧光笔" style="font-size: 10px;">🖍️</button>
+        <div class="divider"></div>
         <button id="clearDrawing" title="清除"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         <button id="closeDrawing" title="关闭 (D)">✕</button>
     </div>
@@ -2010,7 +2013,7 @@
             <div class="flex justify-center items-center gap-12 flex-wrap">
                 <div class="stat-card w-48 card-3d">
                     <div class="icon-box-outline mx-auto mb-4"><i data-lucide="user"></i></div>
-                    <p class="stat-number counter-highlight"><span class="count-up" data-target="10">0</span>%</p>
+                    <p class="stat-number counter-highlight">0%</p>
                     <p class="mt-2" style="color: var(--text-secondary)">我写的代码</p>
                 </div>
 
@@ -2022,7 +2025,7 @@
 
                 <div class="stat-card w-48 card-3d pulse-border" style="border-color: var(--primary)">
                     <div class="icon-box mx-auto mb-4"><i data-lucide="bot"></i></div>
-                    <p class="stat-number counter-highlight"><span class="count-up" data-target="90">0</span>%</p>
+                    <p class="stat-number counter-highlight">100%</p>
                     <p class="mt-2" style="color: var(--text-secondary)">AI 写的代码</p>
                 </div>
             </div>
@@ -2620,8 +2623,15 @@
                         <span class="icon-box w-8 h-8 text-sm">5</span> 心法 5
                     </p>
                     <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">IDE 不再是 IDE：干中学</h2>
-                    <p class="text-lg mb-6" style="color: var(--text-secondary)">以前 IDE = 写代码的地方<br>现在 IDE = 和 AI 协作的地方
+                    <p class="text-lg mb-6" style="color: var(--text-secondary)">以前 IDE = 写代码的地方<br>现在 IDE = AI 协作 +
+                        学习平台
                     </p>
+
+                    <div class="flex justify-center animate-float mb-6">
+                        <img src="https://illustrations.popsy.co/teal/student-going-to-school.svg"
+                            alt="Learning illustration" class="w-full max-w-[160px] illustration-img" loading="lazy"
+                            onerror="this.parentElement.innerHTML='<div class=\'icon-box w-16 h-16 mx-auto\'><i data-lucide=\'laptop\'></i></div>'">
+                    </div>
 
                     <div class="flex flex-wrap gap-3 mb-6">
                         <span class="px-4 py-2 feature-card rounded-full text-sm animate-scale"
@@ -2632,12 +2642,6 @@
                             style="animation-delay: 0.3s; color: var(--text-primary)">Claude Code</span>
                         <span class="px-4 py-2 feature-card rounded-full text-sm animate-scale"
                             style="animation-delay: 0.4s; border: 2px solid var(--primary); color: var(--primary)">Kiro</span>
-                    </div>
-
-                    <div class="flex justify-center animate-float">
-                        <img src="https://illustrations.popsy.co/teal/student-going-to-school.svg"
-                            alt="Learning illustration" class="w-full max-w-[160px] illustration-img" loading="lazy"
-                            onerror="this.parentElement.innerHTML='<div class=\'icon-box w-16 h-16 mx-auto\'><i data-lucide=\'laptop\'></i></div>'">
                     </div>
                 </div>
 
@@ -3056,11 +3060,6 @@
 
                 <!-- 社交链接 -->
                 <div class="mt-8 flex justify-center gap-6 animate-slide-up delay-500">
-                    <a href="https://github.com/lyfe2025" target="_blank"
-                        class="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg"
-                        style="background: var(--surface); border: 1px solid var(--border);">
-                        <i data-lucide="github" class="w-5 h-5" style="color: var(--text-primary)"></i>
-                    </a>
                     <a href="mailto:wuweixiang.alex@gmail.com"
                         class="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg"
                         style="background: var(--surface); border: 1px solid var(--border);">
@@ -3420,18 +3419,42 @@
         let isDrawingMode = false;
         let drawColor = '#FF0000';
         let drawWidth = 3;
+        let isHighlighterMode = false;
 
         function resizeCanvas() {
+            // 保存当前画布内容
+            const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+
+            // 设置 canvas 尺寸为整个文档高度
+            const docHeight = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            );
             drawingCanvas.width = window.innerWidth;
-            drawingCanvas.height = window.innerHeight;
+            drawingCanvas.height = docHeight;
+
+            // 恢复画布内容
+            ctx.putImageData(imageData, 0, 0);
         }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
+        // 当内容变化时也需要调整 canvas 大小
+        const resizeObserver = new ResizeObserver(() => {
+            setTimeout(resizeCanvas, 100);
+        });
+        resizeObserver.observe(document.body);
 
         function toggleDrawingMode() {
             isDrawingMode = !isDrawingMode;
             drawingCanvas.classList.toggle('active', isDrawingMode);
             drawingToolbar.classList.toggle('active', isDrawingMode);
+            // 每次打开绘图模式时重新计算 canvas 大小
+            if (isDrawingMode) {
+                resizeCanvas();
+            }
         }
 
         // Color buttons
@@ -3445,14 +3468,26 @@
 
         // Pen size buttons
         document.getElementById('penThin').addEventListener('click', function () {
-            drawWidth = 3;
+            drawWidth = isHighlighterMode ? 20 : 3;
             this.classList.add('active');
             document.getElementById('penThick').classList.remove('active');
         });
         document.getElementById('penThick').addEventListener('click', function () {
-            drawWidth = 8;
+            drawWidth = isHighlighterMode ? 40 : 8;
             this.classList.add('active');
             document.getElementById('penThin').classList.remove('active');
+        });
+
+        // Highlighter mode toggle
+        document.getElementById('highlighterMode').addEventListener('click', function () {
+            isHighlighterMode = !isHighlighterMode;
+            this.classList.toggle('active', isHighlighterMode);
+            // 切换模式时调整笔宽
+            if (isHighlighterMode) {
+                drawWidth = document.getElementById('penThin').classList.contains('active') ? 20 : 40;
+            } else {
+                drawWidth = document.getElementById('penThin').classList.contains('active') ? 3 : 8;
+            }
         });
 
         // Clear and close
@@ -3461,49 +3496,128 @@
         });
         document.getElementById('closeDrawing').addEventListener('click', toggleDrawingMode);
 
-        // Drawing events
+        // 获取相对于文档的坐标
+        function getDocumentCoords(e) {
+            return {
+                x: e.clientX + window.scrollX,
+                y: e.clientY + window.scrollY
+            };
+        }
+
+        // 荧光笔路径存储
+        let highlighterPath = [];
+        let baseImageData = null;
+
+        // Drawing events - 使用文档坐标
         drawingCanvas.addEventListener('mousedown', (e) => {
             if (!isDrawingMode) return;
             isDrawing = true;
-            ctx.beginPath();
-            ctx.moveTo(e.clientX, e.clientY);
-            ctx.strokeStyle = drawColor;
-            ctx.lineWidth = drawWidth;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+            const coords = getDocumentCoords(e);
+
+            if (isHighlighterMode) {
+                // 保存当前画布状态
+                baseImageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+                highlighterPath = [coords];
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(coords.x, coords.y);
+                ctx.strokeStyle = drawColor;
+                ctx.lineWidth = drawWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.globalAlpha = 1;
+            }
         });
 
         drawingCanvas.addEventListener('mousemove', (e) => {
             if (!isDrawing) return;
-            ctx.lineTo(e.clientX, e.clientY);
-            ctx.stroke();
+            const coords = getDocumentCoords(e);
+
+            if (isHighlighterMode) {
+                highlighterPath.push(coords);
+                // 恢复基础状态，重绘荧光笔
+                ctx.putImageData(baseImageData, 0, 0);
+                drawHighlighterPath();
+            } else {
+                ctx.lineTo(coords.x, coords.y);
+                ctx.stroke();
+            }
         });
 
-        drawingCanvas.addEventListener('mouseup', () => isDrawing = false);
-        drawingCanvas.addEventListener('mouseleave', () => isDrawing = false);
+        // 绘制荧光笔路径（单次绘制，不叠加）
+        function drawHighlighterPath() {
+            if (highlighterPath.length < 2) return;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(highlighterPath[0].x, highlighterPath[0].y);
+            for (let i = 1; i < highlighterPath.length; i++) {
+                ctx.lineTo(highlighterPath[i].x, highlighterPath[i].y);
+            }
+            ctx.strokeStyle = drawColor;
+            ctx.lineWidth = drawWidth;
+            ctx.lineCap = 'square';
+            ctx.lineJoin = 'round';
+            ctx.globalAlpha = 0.3;
+            ctx.stroke();
+            ctx.restore();
+        }
 
-        // Touch support for drawing
+        drawingCanvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            highlighterPath = [];
+            baseImageData = null;
+            ctx.globalAlpha = 1;
+        });
+        drawingCanvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+            highlighterPath = [];
+            baseImageData = null;
+            ctx.globalAlpha = 1;
+        });
+
+        // Touch support for drawing - 使用文档坐标
         drawingCanvas.addEventListener('touchstart', (e) => {
             if (!isDrawingMode) return;
             e.preventDefault();
             const touch = e.touches[0];
+            const coords = getDocumentCoords(touch);
             isDrawing = true;
-            ctx.beginPath();
-            ctx.moveTo(touch.clientX, touch.clientY);
-            ctx.strokeStyle = drawColor;
-            ctx.lineWidth = drawWidth;
-            ctx.lineCap = 'round';
+
+            if (isHighlighterMode) {
+                baseImageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+                highlighterPath = [coords];
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(coords.x, coords.y);
+                ctx.strokeStyle = drawColor;
+                ctx.lineWidth = drawWidth;
+                ctx.lineCap = 'round';
+                ctx.globalAlpha = 1;
+            }
         });
 
         drawingCanvas.addEventListener('touchmove', (e) => {
             if (!isDrawing) return;
             e.preventDefault();
             const touch = e.touches[0];
-            ctx.lineTo(touch.clientX, touch.clientY);
-            ctx.stroke();
+            const coords = getDocumentCoords(touch);
+
+            if (isHighlighterMode) {
+                highlighterPath.push(coords);
+                ctx.putImageData(baseImageData, 0, 0);
+                drawHighlighterPath();
+            } else {
+                ctx.lineTo(coords.x, coords.y);
+                ctx.stroke();
+            }
         });
 
-        drawingCanvas.addEventListener('touchend', () => isDrawing = false);
+        drawingCanvas.addEventListener('touchend', () => {
+            isDrawing = false;
+            highlighterPath = [];
+            baseImageData = null;
+            ctx.globalAlpha = 1;
+        });
 
         // ========== 增强交互效果 ==========
 
