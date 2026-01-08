@@ -1,0 +1,4042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 时代的编程心法</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Noto Sans SC', 'Inter', 'sans-serif'],
+                        body: ['Inter', 'Noto Sans SC', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0D9488',
+                        primaryDark: '#0F766E',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #F8FAFB;
+            --bg-alt: #F1F5F9;
+            --surface: #FFFFFF;
+            --border: #E2E8F0;
+            --text-primary: #1F2937;
+            --text-secondary: #64748B;
+            --primary: #0D9488;
+        }
+
+        html.dark {
+            --bg: #0B0B10;
+            --bg-alt: #121218;
+            --surface: #1E293B;
+            --border: #334155;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --primary: #14B8A6;
+        }
+
+        /* 插画暗色模式适配 */
+        .illustration-img {
+            transition: filter 0.3s;
+        }
+
+        html.dark .illustration-img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* 3D 过渡容器 */
+        html {
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* 标题渐变动画 */
+        @keyframes gradientText {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-title {
+            background: linear-gradient(90deg, var(--primary), #14B8A6, #0EA5E9, var(--primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 4s ease infinite;
+        }
+
+        /* 打字机效果 */
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid var(--primary);
+            white-space: nowrap;
+            animation: typewriter 2s steps(20) forwards, blinkCursor 0.8s step-end infinite;
+        }
+
+        @keyframes typewriter {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blinkCursor {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .typewriter-cursor {
+            color: var(--primary);
+            font-weight: 300;
+            animation: blinkCursor 0.8s step-end infinite;
+        }
+
+        .typewriter-highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .animate-slide-left {
+            animation: slideInLeft 0.6s ease-out forwards;
+        }
+
+        .animate-slide-right {
+            animation: slideInRight 0.6s ease-out forwards;
+        }
+
+        .animate-slide-up {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        .animate-scale {
+            animation: scaleIn 0.5s ease-out forwards;
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-500 {
+            animation-delay: 0.5s;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+        }
+
+        /* 3D 过渡 - perspective 放在 slides 容器上而不是 body */
+        body {
+            overflow-x: hidden;
+        }
+
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+            opacity: 0;
+            background: var(--bg);
+            transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateZ(0) rotateX(0);
+        }
+
+        /* 3D 过渡动画类 */
+        .slide.slide-exit-up {
+            opacity: 0;
+            transform: translateY(-30%) translateZ(-200px) rotateX(15deg);
+        }
+
+        .slide.slide-exit-down {
+            opacity: 0;
+            transform: translateY(30%) translateZ(-200px) rotateX(-15deg);
+        }
+
+        .slide.slide-enter-from-bottom {
+            opacity: 0;
+            transform: translateY(50%) translateZ(-300px) rotateX(-10deg);
+        }
+
+        .slide.slide-enter-from-top {
+            opacity: 0;
+            transform: translateY(-50%) translateZ(-300px) rotateX(10deg);
+        }
+
+        /* Presentation mode */
+        body.presentation-mode {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+        }
+
+        body.presentation-mode .slide {
+            scroll-snap-align: start;
+            opacity: 1;
+        }
+
+        /* Drawing canvas */
+        .drawing-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            cursor: crosshair;
+        }
+
+        .drawing-canvas.active {
+            pointer-events: auto;
+        }
+
+        /* Drawing toolbar */
+        .drawing-toolbar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            display: none;
+            gap: 0.5rem;
+            z-index: 101;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .drawing-toolbar.active {
+            display: flex;
+        }
+
+        .drawing-toolbar button {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            background: #F1F5F9;
+            color: #1F2937;
+            font-size: 1rem;
+        }
+
+        .drawing-toolbar button:hover {
+            background: #E2E8F0;
+        }
+
+        .drawing-toolbar button.active {
+            background: #0D9488;
+            color: white;
+        }
+
+        .drawing-toolbar .color-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            padding: 0;
+        }
+
+        .drawing-toolbar .color-btn.active {
+            border-color: #1F2937;
+        }
+
+        .drawing-toolbar .divider {
+            width: 1px;
+            height: 24px;
+            background: #E2E8F0;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), #14B8A6);
+            z-index: 100;
+            transition: width 0.3s;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-dot.active,
+        .nav-dot:hover {
+            background: var(--primary);
+            box-shadow: 0 0 10px rgba(13, 148, 136, 0.4);
+        }
+
+        /* Nav dot tooltip */
+        .nav-dot::before {
+            content: attr(data-title);
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--surface);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-dot:hover::before {
+            opacity: 1;
+        }
+
+        /* 章节指示器 */
+        .section-indicator {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .section-indicator .section-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* 快捷键提示浮层 */
+        .shortcuts-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .shortcuts-overlay.active {
+            display: flex;
+        }
+
+        .shortcuts-card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .shortcuts-card h3 {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .shortcut-item:last-child {
+            border-bottom: none;
+        }
+
+        .shortcut-item span {
+            color: var(--text-secondary);
+        }
+
+        .shortcut-item kbd {
+            background: var(--bg-alt);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .shortcuts-close {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .shortcuts-close:hover {
+            opacity: 0.9;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .highlight-underline {
+            position: relative;
+            display: inline-block;
+        }
+
+        .highlight-underline::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        kbd {
+            background: var(--bg-alt);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            z-index: 50;
+        }
+
+        .slide-counter .current {
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Fullscreen mode */
+        .fullscreen-hint {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            z-index: 150;
+            background: var(--surface);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            opacity: 0.8;
+        }
+
+        .fullscreen-hint:hover {
+            opacity: 1;
+        }
+
+        body.is-fullscreen .fullscreen-hint {
+            display: none;
+        }
+
+        body.is-fullscreen .slide-counter {
+            bottom: 1rem;
+            left: 1rem;
+        }
+
+        body.is-fullscreen .nav-dot {
+            width: 8px;
+            height: 8px;
+        }
+
+        body.is-fullscreen #navDots {
+            right: 1rem;
+            gap: 0.5rem;
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            z-index: 60;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Number animation */
+        .count-up {
+            display: inline-block;
+        }
+
+        /* Timer */
+        .timer {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: var(--text-secondary);
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s, background 0.3s;
+            background: var(--surface);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .timer.visible {
+            opacity: 1;
+        }
+
+        body.is-fullscreen .timer {
+            bottom: 1rem;
+        }
+
+        /* Blackout mode */
+        .blackout {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .blackout.active {
+            display: flex;
+        }
+
+        /* Thumbnail grid */
+        .thumbnail-grid {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 150;
+            display: none;
+            padding: 2rem;
+            overflow-y: auto;
+            transition: background 0.3s;
+        }
+
+        .thumbnail-grid.active {
+            display: block;
+        }
+
+        .thumbnail-grid-inner {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .thumbnail {
+            aspect-ratio: 16/9;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.current {
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(13, 148, 136, 0.15);
+        }
+
+        .thumbnail .num {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .thumbnail .title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        /* Step reveal */
+        .step-item {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.4s ease-out;
+        }
+
+        .step-item.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step-container.auto-reveal .step-item {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Print styles */
+        @media print {
+            .slide {
+                min-height: auto;
+                page-break-after: always;
+                padding: 2rem;
+            }
+
+            .progress-bar,
+            #navDots,
+            .slide-counter,
+            .timer,
+            .fullscreen-hint,
+            .bg-animated {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .card {
+                background: #f5f5f5;
+                border-color: #ddd;
+            }
+
+            .highlight {
+                color: #0D9488;
+            }
+        }
+
+        /* Touch swipe indicator */
+        @media (max-width: 768px) {
+            .fullscreen-hint {
+                display: none;
+            }
+
+            .thumbnail-grid-inner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .section-indicator {
+                display: none;
+            }
+
+            .slide {
+                padding: 2rem 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem !important;
+            }
+
+            h2 {
+                font-size: 1.75rem !important;
+            }
+
+            .feature-card {
+                padding: 1rem;
+            }
+
+            .icon-box {
+                width: 44px;
+                height: 44px;
+            }
+
+            .icon-box svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .grid {
+                gap: 1rem;
+            }
+
+            .terminal-card {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide {
+                padding: 1.5rem 0.75rem;
+            }
+
+            h1 {
+                font-size: 2rem !important;
+            }
+
+            h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .icon-box {
+                width: 36px;
+                height: 36px;
+            }
+
+            .icon-box svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .feature-card {
+                padding: 0.75rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Terminal card style */
+        .terminal-card {
+            background: #1F2937;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .terminal-header {
+            background: #374151;
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-body {
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            color: #E5E7EB;
+            line-height: 1.6;
+        }
+
+        /* 代码高亮 */
+        .code-keyword {
+            color: #FF7B72;
+        }
+
+        .code-string {
+            color: #A5D6FF;
+        }
+
+        .code-comment {
+            color: #8B949E;
+        }
+
+        .code-number {
+            color: #79C0FF;
+        }
+
+        .code-property {
+            color: #D2A8FF;
+        }
+
+        .code-function {
+            color: #D2A8FF;
+        }
+
+        .code-punctuation {
+            color: #C9D1D9;
+        }
+
+        /* Feature card */
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Decorative shapes */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .deco-dots {
+            background-image: radial-gradient(var(--primary) 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+
+        .deco-gradient {
+            background: linear-gradient(135deg, var(--primary), #14B8A6);
+        }
+
+        .deco-blob {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+
+        /* Icon containers */
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), #14B8A6);
+            color: white;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .icon-box svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+
+        .icon-box-outline {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .icon-box-outline svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+        }
+
+        /* Illustration placeholders */
+        .illustration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-alt);
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.1), rgba(20, 184, 166, 0.05));
+        }
+
+        /* Stat card */
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        /* ========== 增强动效 ========== */
+
+        /* 卡片悬停 3D 效果 */
+        .card-3d {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 20px 40px rgba(13, 148, 136, 0.15);
+        }
+
+        /* 闪光效果 */
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shine-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .shine-effect:hover::before {
+            left: 100%;
+        }
+
+        /* 脉冲边框 */
+        .pulse-border {
+            position: relative;
+        }
+
+        .pulse-border::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: inherit;
+            border: 2px solid var(--primary);
+            opacity: 0;
+            animation: pulseBorder 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseBorder {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.02);
+            }
+        }
+
+        /* 打字机光标 */
+        .typewriter-cursor {
+            animation: cursorBlink 1s step-end infinite;
+            color: var(--primary);
+        }
+
+        @keyframes cursorBlink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* 弹跳入场 */
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-bounce-in {
+            animation: bounceIn 0.6s ease-out forwards;
+        }
+
+        /* 摇晃效果 */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .shake-on-hover:hover {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* 渐变背景动画 */
+        .animated-gradient-bg {
+            background: linear-gradient(-45deg, rgba(13, 148, 136, 0.1), rgba(20, 184, 166, 0.05), rgba(14, 165, 233, 0.1), rgba(13, 148, 136, 0.05));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* 图标旋转 */
+        .icon-spin-hover:hover .icon-box,
+        .icon-spin-hover:hover .icon-box-outline {
+            animation: iconSpin 0.6s ease;
+        }
+
+        @keyframes iconSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 下划线动画 */
+        .underline-animation {
+            position: relative;
+            display: inline-block;
+        }
+
+        .underline-animation::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .underline-animation:hover::after {
+            width: 100%;
+        }
+
+        /* 数字跳动 */
+        @keyframes numberPop {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .number-pop {
+            animation: numberPop 0.3s ease;
+        }
+
+        /* 进度条动画 */
+        .progress-animate {
+            width: 0;
+            transition: width 1.5s ease-out;
+        }
+
+        .progress-animate.visible {
+            width: var(--progress-width, 85%);
+        }
+
+        /* 涟漪效果 */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(13, 148, 136, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* 卡片翻转 */
+        .flip-card {
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(10deg);
+        }
+
+        /* 滑入显示 */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-on-scroll.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 交错动画 */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .stagger-item.visible {
+            animation: staggerIn 0.5s ease forwards;
+        }
+
+        @keyframes staggerIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 悬浮阴影 */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* 边框流动 */
+        .border-flow {
+            position: relative;
+        }
+
+        .border-flow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(90deg, var(--primary), #14B8A6, #0EA5E9, var(--primary));
+            background-size: 300% 100%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: borderFlow 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .border-flow:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes borderFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 300% 50%;
+            }
+        }
+
+        /* 文字渐显 */
+        .text-reveal {
+            background: linear-gradient(90deg, var(--text-primary) 50%, transparent 50%);
+            background-size: 200% 100%;
+            background-position: 100% 0;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textReveal 1s ease forwards;
+        }
+
+        @keyframes textReveal {
+            to {
+                background-position: 0% 0;
+            }
+        }
+
+        /* 图标弹跳 */
+        .icon-bounce:hover i,
+        .icon-bounce:hover svg {
+            animation: iconBounce 0.5s ease;
+        }
+
+        @keyframes iconBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            25% {
+                transform: translateY(-8px);
+            }
+
+            50% {
+                transform: translateY(0);
+            }
+
+            75% {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* 计数器高亮 */
+        .counter-highlight {
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .counter-highlight.counting {
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(13, 148, 136, 0.5);
+        }
+
+        /* 卡片堆叠效果 */
+        .card-stack {
+            position: relative;
+        }
+
+        .card-stack::before,
+        .card-stack::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: inherit;
+            z-index: -1;
+            transition: transform 0.3s ease;
+        }
+
+        .card-stack::before {
+            transform: rotate(-2deg) translateY(4px);
+        }
+
+        .card-stack::after {
+            transform: rotate(2deg) translateY(8px);
+        }
+
+        .card-stack:hover::before {
+            transform: rotate(-4deg) translateY(6px);
+        }
+
+        .card-stack:hover::after {
+            transform: rotate(4deg) translateY(12px);
+        }
+
+        /* 呼吸灯效果 */
+        .breathing-glow {
+            animation: breathingGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes breathingGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(13, 148, 136, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(13, 148, 136, 0.4);
+            }
+        }
+
+        /* 标签云动画 */
+        .tag-float {
+            animation: tagFloat 3s ease-in-out infinite;
+        }
+
+        .tag-float:nth-child(2n) {
+            animation-delay: 0.5s;
+        }
+
+        .tag-float:nth-child(3n) {
+            animation-delay: 1s;
+        }
+
+        @keyframes tagFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* 连接线动画 */
+        .connector-line {
+            position: relative;
+        }
+
+        .connector-line::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+            transition: height 0.5s ease;
+        }
+
+        .connector-line.connected::after {
+            height: 30px;
+        }
+
+        /* 3D 立方体 */
+        .cube-container {
+            width: 120px;
+            height: 120px;
+            perspective: 600px;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 12s infinite linear;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--primary);
+            background: rgba(13, 148, 136, 0.1);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border-radius: 8px;
+        }
+
+        html.dark .cube-face {
+            background: rgba(20, 184, 166, 0.15);
+            border-color: #14B8A6;
+        }
+
+        .cube-face.front {
+            transform: translateZ(60px);
+        }
+
+        .cube-face.back {
+            transform: rotateY(180deg) translateZ(60px);
+        }
+
+        .cube-face.right {
+            transform: rotateY(90deg) translateZ(60px);
+        }
+
+        .cube-face.left {
+            transform: rotateY(-90deg) translateZ(60px);
+        }
+
+        .cube-face.top {
+            transform: rotateX(90deg) translateZ(60px);
+        }
+
+        .cube-face.bottom {
+            transform: rotateX(-90deg) translateZ(60px);
+        }
+
+        @keyframes rotateCube {
+            0% {
+                transform: rotateX(-20deg) rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateX(-20deg) rotateY(360deg);
+            }
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        /* Text color utilities */
+        .text-theme-primary {
+            color: var(--text-primary);
+        }
+
+        .text-theme-secondary {
+            color: var(--text-secondary);
+        }
+
+        .bg-theme {
+            background: var(--bg);
+        }
+
+        .bg-theme-surface {
+            background: var(--surface);
+        }
+
+        .border-theme {
+            border-color: var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Section Indicator -->
+    <div class="section-indicator" id="sectionIndicator">
+        <i data-lucide="bookmark" class="w-4 h-4" style="color: var(--primary)"></i>
+        <span class="section-name" id="sectionName">AI 时代的编程心法</span>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" title="切换主题 (M)"><i data-lucide="moon"></i></button>
+
+    <!-- Shortcuts Overlay -->
+    <div class="shortcuts-overlay" id="shortcutsOverlay">
+        <div class="shortcuts-card">
+            <h3><i data-lucide="keyboard" class="w-5 h-5" style="color: var(--primary)"></i> 快捷键</h3>
+            <div class="shortcut-item"><span>下一页</span><kbd>↓</kbd> <kbd>Space</kbd></div>
+            <div class="shortcut-item"><span>上一页</span><kbd>↑</kbd></div>
+            <div class="shortcut-item"><span>全屏</span><kbd>F</kbd></div>
+            <div class="shortcut-item"><span>导航</span><kbd>G</kbd></div>
+            <div class="shortcut-item"><span>计时器</span><kbd>T</kbd></div>
+            <div class="shortcut-item"><span>主题切换</span><kbd>M</kbd></div>
+            <div class="shortcut-item"><span>画笔</span><kbd>D</kbd></div>
+            <div class="shortcut-item"><span>清除画布</span><kbd>C</kbd></div>
+            <div class="shortcut-item"><span>黑屏</span><kbd>B</kbd></div>
+            <div class="shortcut-item"><span>帮助</span><kbd>?</kbd></div>
+            <button class="shortcuts-close" id="shortcutsClose">知道了</button>
+        </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <nav class="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3" id="navDots"></nav>
+
+    <!-- Slide Counter -->
+    <div class="slide-counter">
+        <span class="current" id="currentSlideNum">1</span>
+        <span style="color: var(--text-secondary)">/ <span id="totalSlides">18</span></span>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer" id="timer">00:00</div>
+
+    <!-- Fullscreen Hint -->
+    <div class="fullscreen-hint" style="z-index: 200;">
+        <kbd>F</kbd> 全屏 | <kbd>G</kbd> 导航 | <kbd>T</kbd> 计时 | <kbd>M</kbd> 主题 | <kbd>D</kbd> 画笔 |
+        <kbd>?</kbd> 帮助
+    </div>
+
+    <!-- Blackout -->
+    <div class="blackout" id="blackout">按 B 返回</div>
+
+    <!-- Thumbnail Grid -->
+    <div class="thumbnail-grid" id="thumbnailGrid">
+        <div class="thumbnail-grid-inner" id="thumbnailGridInner"></div>
+    </div>
+
+    <!-- Drawing Canvas & Toolbar -->
+    <canvas class="drawing-canvas" id="drawingCanvas"></canvas>
+    <div class="drawing-toolbar" id="drawingToolbar">
+        <button class="color-btn active" data-color="#FF0000" style="background: #FF0000;" title="红色"></button>
+        <button class="color-btn" data-color="#FFFF00" style="background: #FFFF00;" title="黄色"></button>
+        <button class="color-btn" data-color="#00FF00" style="background: #00FF00;" title="绿色"></button>
+        <button class="color-btn" data-color="#3B82F6" style="background: #3B82F6;" title="蓝色"></button>
+        <button class="color-btn" data-color="#FFFFFF" style="background: #FFFFFF;" title="白色"></button>
+        <div class="divider"></div>
+        <button id="penThin" class="active" title="细笔" style="font-size: 10px; font-weight: bold;">细</button>
+        <button id="penThick" title="粗笔" style="font-size: 10px; font-weight: bold;">粗</button>
+        <div class="divider"></div>
+        <button id="clearDrawing" title="清除"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        <button id="closeDrawing" title="关闭 (D)">✕</button>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <section class="slide" data-slide="0" style="overflow: hidden;">
+        <!-- 星空粒子隧道背景 -->
+        <canvas id="starfield" class="absolute inset-0 w-full h-full"
+            style="opacity: 0.4; pointer-events: none;"></canvas>
+
+        <div class="max-w-6xl mx-auto px-8 fade-in relative z-10">
+            <!-- Decorative elements -->
+            <div class="deco-circle deco-gradient w-96 h-96 absolute -top-20 -right-20 opacity-10 animate-pulse"></div>
+            <div class="deco-dots w-32 h-32 absolute bottom-10 left-10 opacity-30"></div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Left: Text -->
+                <div class="relative z-10">
+                    <p class="text-primary mb-4 tracking-widest uppercase text-sm font-medium flex items-center gap-2 animate-slide-left"
+                        style="color: var(--primary)">
+                        <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--primary)"></span>
+                        FUTURE OF DEVELOPMENT
+                    </p>
+                    <h1 class="text-5xl md:text-6xl font-black mb-4 leading-tight animate-slide-left delay-100"
+                        style="color: var(--text-primary)">
+                        AI 时代的<br><span class="gradient-title">编程心法</span>
+                    </h1>
+                    <div class="w-16 h-1 mb-6 animate-slide-left delay-200" style="background: var(--primary)"></div>
+                    <div class="text-2xl mb-2 animate-slide-left delay-200" style="color: var(--text-primary)">
+                        <span id="typewriterText">从 <span class="highlight">"写代码"</span> 到 <span
+                                class="highlight">"管代码"</span></span><span class="typewriter-cursor">|</span>
+                    </div>
+                    <p class="mb-8 animate-slide-left delay-300" style="color: var(--text-secondary)">Transformation
+                        from Coding to Code Management</p>
+                    <div class="flex items-center gap-4 text-sm animate-slide-left delay-400"
+                        style="color: var(--text-secondary)">
+                        <span class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i> 吴伟祥</span>
+                        <span style="color: var(--border)">|</span>
+                        <span class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i>
+                            2026-01-09</span>
+                    </div>
+                </div>
+                <!-- Right: Visual -->
+                <div class="flex justify-center relative z-10">
+                    <div class="relative animate-slide-right delay-200">
+                        <!-- Feature card -->
+                        <div class="feature-card w-72 animate-float" style="animation-delay: 0.5s">
+                            <p class="text-xs font-medium mb-2 tracking-wider" style="color: var(--primary)">NEW ERA</p>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="icon-box"><i data-lucide="zap"></i></div>
+                                <div>
+                                    <p class="font-bold" style="color: var(--text-primary)">Code Manager</p>
+                                    <p class="text-sm" style="color: var(--text-secondary)">Thinking > Typing</p>
+                                </div>
+                            </div>
+                            <div class="h-2 rounded-full overflow-hidden mb-2" style="background: var(--bg-alt)">
+                                <div class="h-full rounded-full"
+                                    style="width: 85%; background: linear-gradient(90deg, var(--primary), #14B8A6)">
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span style="color: var(--text-secondary)">Efficiency</span>
+                                <span class="font-semibold" style="color: var(--primary)">+850%</span>
+                            </div>
+                        </div>
+                        <!-- Terminal card -->
+                        <div class="terminal-card absolute -left-16 top-full mt-4 w-52 animate-slide-up delay-400">
+                            <div class="terminal-header">
+                                <div class="terminal-dot bg-red-500"></div>
+                                <div class="terminal-dot bg-yellow-500"></div>
+                                <div class="terminal-dot bg-green-500"></div>
+                            </div>
+                            <div class="terminal-body text-xs">
+                                <p class="text-green-400">> AI.generate()</p>
+                                <p class="text-gray-400">Generating system...</p>
+                                <p style="color: var(--primary)">Done in 0.4s <i data-lucide="check"
+                                        class="w-3 h-3 inline"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide: Agenda -->
+    <section class="slide" data-slide="1">
+        <div class="max-w-6xl mx-auto fade-in relative">
+            <div class="grid md:grid-cols-5 gap-8 items-stretch">
+                <!-- Left Panel - Overview -->
+                <div class="md:col-span-2 rounded-2xl p-8 relative overflow-hidden"
+                    style="background: linear-gradient(135deg, var(--primary), #0F766E);">
+                    <!-- Decorative circles -->
+                    <div class="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
+                        style="background: white; transform: translate(30%, -30%);"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 rounded-full opacity-10"
+                        style="background: white; transform: translate(-30%, 30%);"></div>
+
+                    <p class="text-sm font-medium tracking-widest uppercase mb-2 text-teal-200">AGENDA</p>
+                    <h2 class="text-5xl font-black text-white mb-2">目录<span class="text-yellow-400">.</span></h2>
+                    <div class="w-12 h-1 bg-yellow-400 mb-8"></div>
+
+                    <div class="flex items-center gap-3 mb-6 text-white/90">
+                        <div class="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center">
+                            <i data-lucide="clock" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-teal-200">预计总时长</p>
+                            <p class="text-2xl font-bold text-yellow-400">60 分钟</p>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        本次分享将深入探讨 Vibe Coding 的理念与实践，帮助大家完成从 Coder 到 Commander 的思维跃迁。
+                    </p>
+                </div>
+
+                <!-- Right Panel - Agenda Items -->
+                <div class="md:col-span-3 flex flex-col gap-3">
+                    <!-- Item 1 -->
+                    <div class="feature-card flex items-center gap-4 p-4 hover-lift group">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white"
+                            style="background: linear-gradient(135deg, var(--primary), #14B8A6);">01</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg" style="color: var(--text-primary)">开场：破除误区</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">为什么聊这个 + 常见误区真相</p>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+                            style="background: var(--bg-alt); color: var(--text-secondary);">
+                            <i data-lucide="hourglass" class="w-4 h-4"></i> 5 min
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="feature-card flex items-center gap-4 p-4 hover-lift group">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white"
+                            style="background: linear-gradient(135deg, var(--primary), #14B8A6);">02</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg" style="color: var(--text-primary)">流程篇：开发新范式</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">AI 时代的开发生命周期全景图</p>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+                            style="background: var(--bg-alt); color: var(--text-secondary);">
+                            <i data-lucide="hourglass" class="w-4 h-4"></i> 15 min
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="feature-card flex items-center gap-4 p-4 hover-lift group">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white"
+                            style="background: linear-gradient(135deg, var(--primary), #14B8A6);">03</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg" style="color: var(--text-primary)">心法篇：核心理解</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">6 个核心认知与思维转变</p>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+                            style="background: var(--bg-alt); color: var(--text-secondary);">
+                            <i data-lucide="hourglass" class="w-4 h-4"></i> 20 min
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="feature-card flex items-center gap-4 p-4 hover-lift group">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white"
+                            style="background: linear-gradient(135deg, var(--primary), #14B8A6);">04</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg" style="color: var(--text-primary)">术篇：利器在手</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">必备工具链和学习资源推荐</p>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+                            style="background: var(--bg-alt); color: var(--text-secondary);">
+                            <i data-lucide="hourglass" class="w-4 h-4"></i> 10 min
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="feature-card flex items-center gap-4 p-4 hover-lift group">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white"
+                            style="background: linear-gradient(135deg, var(--primary), #14B8A6);">05</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg" style="color: var(--text-primary)">总结与互动</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">行动清单 + Q&A</p>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+                            style="background: var(--bg-alt); color: var(--text-secondary);">
+                            <i data-lucide="hourglass" class="w-4 h-4"></i> 10 min
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Story -->
+    <section class="slide" data-slide="2">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-64 h-64 absolute -bottom-20 -left-20"
+                style="background: var(--primary); opacity: 0.05"></div>
+
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="w-2 h-2 rounded-full" style="background: var(--primary)"></span>真实故事
+            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mb-8" style="color: var(--text-primary)">
+                上个月我用 AI 做了一个<br><span class="highlight">完整的后台管理系统</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 mt-12">
+                <div class="stat-card card-3d card-stack relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 opacity-10"
+                        style="background: var(--primary); border-radius: 0 0 0 100%"></div>
+                    <div class="icon-box mx-auto mb-4"><i data-lucide="rocket"></i></div>
+                    <p class="stat-number counter-highlight"><span class="count-up" data-target="3">0</span></p>
+                    <p class="text-xl font-medium mt-2" style="color: var(--text-primary)">天</p>
+                    <p class="mt-2" style="color: var(--text-secondary)">从需求到上线</p>
+                </div>
+                <div class="stat-card card-3d relative overflow-hidden" style="opacity: 0.6">
+                    <div class="absolute top-0 right-0 w-20 h-20 opacity-10"
+                        style="background: var(--text-secondary); border-radius: 0 0 0 100%"></div>
+                    <div class="icon-box-outline mx-auto mb-4"
+                        style="border-color: var(--text-secondary); color: var(--text-secondary)"><i
+                            data-lucide="calendar"></i></div>
+                    <p class="stat-number" style="color: var(--text-secondary)">2+</p>
+                    <p class="text-xl font-medium mt-2" style="color: var(--text-secondary)">周</p>
+                    <p class="mt-2" style="color: var(--text-secondary)">传统开发周期</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Key Point -->
+    <section class="slide" data-slide="3">
+        <div class="max-w-5xl mx-auto text-center fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-40 h-40 absolute top-0 left-10" style="background: var(--primary); opacity: 0.05">
+            </div>
+            <div class="deco-circle w-24 h-24 absolute bottom-20 right-20"
+                style="background: var(--primary); opacity: 0.08"></div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-16" style="color: var(--text-primary)">重点是什么？</h2>
+
+            <div class="flex justify-center items-center gap-12 flex-wrap">
+                <div class="stat-card w-48 card-3d">
+                    <div class="icon-box-outline mx-auto mb-4"><i data-lucide="user"></i></div>
+                    <p class="stat-number counter-highlight"><span class="count-up" data-target="10">0</span>%</p>
+                    <p class="mt-2" style="color: var(--text-secondary)">我写的代码</p>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div class="mb-2 animate-pulse" style="color: #FACC15"><i data-lucide="zap" class="w-10 h-10"></i>
+                    </div>
+                    <div class="text-2xl font-bold" style="color: var(--primary)">vs</div>
+                </div>
+
+                <div class="stat-card w-48 card-3d pulse-border" style="border-color: var(--primary)">
+                    <div class="icon-box mx-auto mb-4"><i data-lucide="bot"></i></div>
+                    <p class="stat-number counter-highlight"><span class="count-up" data-target="90">0</span>%</p>
+                    <p class="mt-2" style="color: var(--text-secondary)">AI 写的代码</p>
+                </div>
+            </div>
+
+            <div class="mt-16 feature-card inline-block px-8 py-4 card-3d breathing-glow">
+                <p class="text-xl" style="color: var(--text-secondary)">
+                    这让我开始思考：<span class="highlight font-semibold">程序员的价值到底在哪？</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Vibe Coding -->
+    <section class="slide" data-slide="4">
+        <div class="max-w-6xl mx-auto fade-in relative">
+            <!-- 右上角装饰性手写字体 -->
+            <div class="absolute top-0 right-0 text-6xl md:text-8xl font-light opacity-20 pointer-events-none select-none"
+                style="color: var(--primary); font-family: 'Brush Script MT', cursive; transform: rotate(-5deg);">Vibe
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <!-- 左侧：标题和引用 -->
+                <div>
+                    <p class="text-xs font-semibold tracking-widest uppercase mb-6"
+                        style="color: var(--text-secondary)">NEW CONCEPT</p>
+                    <h2 class="text-4xl md:text-5xl font-black mb-4 leading-tight" style="color: var(--text-primary)">
+                        什么是<br><span class="highlight">Vibe Coding</span>？
+                    </h2>
+                    <p class="text-lg mb-2" style="color: var(--text-secondary)">
+                        不是你 <span class="line-through opacity-60">逐行写代码</span> ，
+                    </p>
+                    <p class="text-lg mb-8" style="color: var(--text-secondary)">
+                        是你 "<span class="highlight font-semibold">指挥</span>" AI 写代码。
+                    </p>
+
+                    <!-- 引用卡片 -->
+                    <div class="feature-card p-5 border-l-4"
+                        style="border-left-color: var(--primary); background: var(--bg-alt);">
+                        <p class="text-sm italic mb-4" style="color: var(--text-secondary)">
+                            "Developers manage the AI's output rather than writing every line themselves."
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                                style="background: var(--primary); color: white;">
+                                <i data-lucide="user" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-sm" style="color: var(--text-primary)">Andrej Karpathy</p>
+                                <p class="text-xs" style="color: var(--text-secondary)">2025 · AI Visionary</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：三步流程卡片 -->
+                <div class="relative flex flex-col gap-4">
+                    <!-- Step 1: Input -->
+                    <div class="feature-card p-5 flex items-start gap-4 animate-slide-right"
+                        style="animation-delay: 0.1s; border-left: 4px solid var(--primary);">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                            style="background: rgba(13, 148, 136, 0.1);">
+                            <i data-lucide="lightbulb" class="w-6 h-6" style="color: var(--primary)"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg mb-1" style="color: var(--primary)">1. 你给想法 (Input)</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">清晰描述需求、逻辑与目标</p>
+                        </div>
+                    </div>
+
+                    <!-- 连接箭头 -->
+                    <div class="flex justify-center -my-1">
+                        <div class="flex flex-col items-center">
+                            <i data-lucide="chevron-down" class="w-5 h-5 animate-pulse"
+                                style="color: var(--primary)"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Process -->
+                    <div class="feature-card p-5 flex items-start gap-4 animate-slide-right"
+                        style="animation-delay: 0.2s; border-left: 4px solid var(--primary); background: linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(13, 148, 136, 0.02));">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                            style="background: var(--primary);">
+                            <i data-lucide="pencil" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-bold text-lg mb-1" style="color: var(--primary)">2. AI 帮你实现 (Process)
+                                </h3>
+                                <i data-lucide="settings" class="w-4 h-4" style="color: var(--text-secondary)"></i>
+                            </div>
+                            <p class="text-sm" style="color: var(--text-secondary)">生成代码、构建架构、处理逻辑</p>
+                        </div>
+                    </div>
+
+                    <!-- 连接箭头 -->
+                    <div class="flex justify-center -my-1">
+                        <div class="flex flex-col items-center">
+                            <i data-lucide="chevron-down" class="w-5 h-5 animate-pulse"
+                                style="color: var(--primary)"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Output -->
+                    <div class="feature-card p-5 flex items-start gap-4 animate-slide-right"
+                        style="animation-delay: 0.3s; border-left: 4px solid var(--primary);">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                            style="background: rgba(13, 148, 136, 0.1);">
+                            <i data-lucide="sparkles" class="w-6 h-6" style="color: var(--primary)"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg mb-1" style="color: var(--primary)">3. 不在意细节 (Output)</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">只要结果正确，无需纠结每一行语法</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Myths -->
+    <section class="slide animated-gradient-bg" data-slide="5">
+        <div class="max-w-5xl mx-auto fade-in">
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="w-2 h-2 rounded-full" style="background: var(--primary)"></span>破除误区
+            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mb-12" style="color: var(--text-primary)">先破除几个误区</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="feature-card group card-3d shake-on-hover" style="border-left: 4px solid #EF4444">
+                    <div class="flex items-start gap-4">
+                        <span class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(239, 68, 68, 0.1)"><i data-lucide="x"
+                                class="w-5 h-5 text-red-500"></i></span>
+                        <div>
+                            <p class="text-red-400 text-xs mb-1">误区 1</p>
+                            <h3 class="text-lg font-semibold mb-2 underline-animation"
+                                style="color: var(--text-primary)">"AI 会取代程序员"</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">真相：AI 取代的是"只会写代码"的程序员，不是"会用 AI
+                                写代码"的程序员</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card group card-3d shake-on-hover" style="border-left: 4px solid #EF4444">
+                    <div class="flex items-start gap-4">
+                        <span class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(239, 68, 68, 0.1)"><i data-lucide="x"
+                                class="w-5 h-5 text-red-500"></i></span>
+                        <div>
+                            <p class="text-red-400 text-xs mb-1">误区 2</p>
+                            <h3 class="text-lg font-semibold mb-2 underline-animation"
+                                style="color: var(--text-primary)">"不用学编程了"</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">真相：你不懂代码，就没法判断 AI 写得对不对。AI
+                                会"一本正经地胡说八道"</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card group card-3d shake-on-hover" style="border-left: 4px solid #EF4444">
+                    <div class="flex items-start gap-4">
+                        <span class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(239, 68, 68, 0.1)"><i data-lucide="x"
+                                class="w-5 h-5 text-red-500"></i></span>
+                        <div>
+                            <p class="text-red-400 text-xs mb-1">误区 3</p>
+                            <h3 class="text-lg font-semibold mb-2 underline-animation"
+                                style="color: var(--text-primary)">"AI 写的代码可以直接用"
+                            </h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">真相：AI 写的代码必须
+                                Review。常见问题：安全漏洞、性能问题、业务逻辑错误</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card group card-3d shake-on-hover" style="border-left: 4px solid #EF4444">
+                    <div class="flex items-start gap-4">
+                        <span class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(239, 68, 68, 0.1)"><i data-lucide="x"
+                                class="w-5 h-5 text-red-500"></i></span>
+                        <div>
+                            <p class="text-red-400 text-xs mb-1">误区 4</p>
+                            <h3 class="text-lg font-semibold mb-2 underline-animation"
+                                style="color: var(--text-primary)">"用 AI 就是偷懒"</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">真相：用 AI 是提效，不是偷懒。聪明的程序员用 AI
+                                省下时间去思考更重要的事</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Process Overview -->
+    <section class="slide" data-slide="6">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <div class="deco-circle w-32 h-32 absolute -top-10 -right-10"
+                style="background: var(--primary); opacity: 0.05"></div>
+
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="w-2 h-2 rounded-full" style="background: var(--primary)"></span>流程篇
+            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mb-12" style="color: var(--text-primary)">AI 时代的开发生命周期</h2>
+
+            <div class="flex flex-wrap justify-center items-center gap-3 text-center">
+                <div class="feature-card px-5 py-4 text-center animate-slide-up" style="animation-delay: 0.1s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="clipboard-list"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">需求调研</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">调研文档</p>
+                </div>
+                <span class="text-2xl animate-pulse" style="color: var(--primary)"><i data-lucide="arrow-right"
+                        class="w-6 h-6"></i></span>
+                <div class="feature-card px-5 py-4 text-center animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="file-text"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">产品设计</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">PRD</p>
+                </div>
+                <span class="text-2xl animate-pulse" style="color: var(--primary)"><i data-lucide="arrow-right"
+                        class="w-6 h-6"></i></span>
+                <div class="feature-card px-5 py-4 text-center animate-slide-up" style="animation-delay: 0.3s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="blocks"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">技术设计</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">技术方案</p>
+                </div>
+                <span class="text-2xl animate-pulse" style="color: var(--primary)"><i data-lucide="arrow-right"
+                        class="w-6 h-6"></i></span>
+                <div class="feature-card px-5 py-4 text-center animate-slide-up" style="animation-delay: 0.4s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="code-2"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">开发实现</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">代码</p>
+                </div>
+                <span class="text-2xl animate-pulse" style="color: var(--primary)"><i data-lucide="arrow-right"
+                        class="w-6 h-6"></i></span>
+                <div class="feature-card px-5 py-4 text-center animate-slide-up" style="animation-delay: 0.5s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="rocket"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">测试验收</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">上线</p>
+                </div>
+            </div>
+
+            <div class="feature-card p-6 mt-12 text-center" style="border: 2px solid var(--primary)">
+                <div class="flex items-center justify-center gap-3">
+                    <i data-lucide="file-text" class="w-8 h-8" style="color: var(--primary)"></i>
+                    <div>
+                        <p class="text-xl" style="color: var(--text-primary)">流程的核心：<span
+                                class="highlight font-bold">文档驱动</span></p>
+                        <p class="text-sm mt-1" style="color: var(--text-secondary)">文档不是负担，是给 AI 的"说明书"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: 6 Core Mindsets Title -->
+    <section class="slide" data-slide="7">
+        <div class="max-w-4xl mx-auto text-center fade-in relative">
+            <div class="deco-circle w-64 h-64 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style="background: var(--primary); opacity: 0.03"></div>
+
+            <p class="text-sm font-medium mb-4" style="color: var(--primary)">心法篇</p>
+            <h2 class="text-5xl md:text-6xl font-bold mb-4" style="color: var(--text-primary)">6 个核心心法</h2>
+            <p class="mb-12" style="color: var(--text-secondary)">掌握这些，成为 AI 时代的高效程序员</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="feature-card p-6 cursor-pointer group card-3d ripple border-flow animate-slide-up"
+                    style="animation-delay: 0.1s">
+                    <div class="icon-box mx-auto mb-3 group-hover:scale-110 transition-transform"><i
+                            data-lucide="target"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">管理思维</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">结果导向</p>
+                </div>
+                <div class="feature-card p-6 cursor-pointer group card-3d ripple border-flow animate-slide-up"
+                    style="animation-delay: 0.15s">
+                    <div class="icon-box mx-auto mb-3 group-hover:scale-110 transition-transform"><i
+                            data-lucide="dumbbell"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">基本功</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">审代码能力</p>
+                </div>
+                <div class="feature-card p-6 cursor-pointer group card-3d ripple border-flow animate-slide-up"
+                    style="animation-delay: 0.2s">
+                    <div class="icon-box mx-auto mb-3 group-hover:scale-110 transition-transform"><i
+                            data-lucide="search"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">问题意识</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">规避优先</p>
+                </div>
+                <div class="feature-card p-6 cursor-pointer group card-3d ripple border-flow animate-slide-up"
+                    style="animation-delay: 0.25s">
+                    <div class="icon-box mx-auto mb-3 group-hover:scale-110 transition-transform"><i
+                            data-lucide="clapperboard"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">自我定位</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">导演思维</p>
+                </div>
+                <div class="feature-card p-6 cursor-pointer group card-3d ripple border-flow animate-slide-up"
+                    style="animation-delay: 0.3s">
+                    <div class="icon-box mx-auto mb-3 group-hover:scale-110 transition-transform"><i
+                            data-lucide="laptop"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">干中学</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">实践出真知</p>
+                </div>
+                <div class="feature-card p-6 cursor-pointer group card-3d ripple border-flow animate-slide-up"
+                    style="animation-delay: 0.35s">
+                    <div class="icon-box mx-auto mb-3 group-hover:scale-110 transition-transform"><i
+                            data-lucide="turtle"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">Slow is Fast</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">规划先行</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Mindset 1 -->
+    <section class="slide" data-slide="8">
+        <div class="max-w-5xl mx-auto fade-in">
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div>
+                    <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                        <span class="icon-box w-8 h-8 text-sm">1</span> 心法 1
+                    </p>
+                    <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">管理思维：结果导向</h2>
+                    <p class="text-lg mb-6" style="color: var(--text-secondary)">你是项目经理，AI 是你的开发团队</p>
+
+                    <div class="feature-card mb-6">
+                        <h3 class="font-semibold mb-4 flex items-center gap-2" style="color: var(--text-primary)">
+                            <i data-lucide="clipboard-check" class="w-5 h-5" style="color: var(--primary)"></i> 你要做什么？
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3">
+                                <span class="icon-box-outline w-6 h-6 text-xs"><i data-lucide="check"
+                                        class="w-3 h-3"></i></span>
+                                <span style="color: var(--text-primary)">知道要什么（需求清晰）</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="icon-box-outline w-6 h-6 text-xs"><i data-lucide="check"
+                                        class="w-3 h-3"></i></span>
+                                <span style="color: var(--text-primary)">知道怎么验收</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="icon-box-outline w-6 h-6 text-xs"><i data-lucide="check"
+                                        class="w-3 h-3"></i></span>
+                                <span style="color: var(--text-primary)">知道什么时候该介入</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="illustration h-48 mb-6 animate-float">
+                        <div class="text-center">
+                            <div class="icon-box w-16 h-16 mx-auto mb-2"><i data-lucide="briefcase"></i></div>
+                            <p class="font-semibold" style="color: var(--text-primary)">Project Manager</p>
+                            <p class="text-sm" style="color: var(--text-secondary)">管理 AI 团队</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card"
+                        style="border-left: 4px solid #EAB308; background: rgba(234, 179, 8, 0.05)">
+                        <p class="text-yellow-600 text-sm font-medium mb-2 flex items-center gap-2"><i
+                                data-lucide="alert-triangle" class="w-4 h-4"></i> 踩坑故事</p>
+                        <p class="text-sm" style="color: var(--text-secondary)">
+                            让 AI 写登录接口，没仔细看就用了。上线后发现：
+                            <span class="text-red-500 font-semibold">密码是明文存储的</span>
+                        </p>
+                        <p class="text-xs mt-2 font-medium" style="color: var(--primary)"><i data-lucide="lightbulb"
+                                class="w-3 h-3 inline"></i> 教训：你得会"验货"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: Mindset 2 -->
+    <section class="slide" data-slide="9">
+        <div class="max-w-5xl mx-auto fade-in">
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div>
+                    <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                        <span class="icon-box w-8 h-8 text-sm">2</span> 心法 2
+                    </p>
+                    <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">基本功的重要性</h2>
+                    <p class="text-lg mb-6" style="color: var(--text-secondary)">AI 能帮你跑得快，但跑错方向就白搭</p>
+
+                    <div class="illustration h-40 animate-float">
+                        <div class="text-center">
+                            <div class="icon-box w-16 h-16 mx-auto mb-2"><i data-lucide="dumbbell"></i></div>
+                            <p class="font-semibold" style="color: var(--text-primary)">基础 = 审代码能力</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="feature-card">
+                        <p class="text-sm mb-2" style="color: var(--text-secondary)">场景：AI 写了段代码</p>
+                        <div class="grid grid-cols-2 gap-4 mt-3">
+                            <div class="p-3 rounded-lg" style="background: rgba(239, 68, 68, 0.1)">
+                                <p class="text-red-500 text-xs mb-1 flex items-center gap-1"><i data-lucide="x"
+                                        class="w-3 h-3"></i> 没基本功</p>
+                                <p class="text-sm" style="color: var(--text-primary)">看不懂，直接用</p>
+                            </div>
+                            <div class="p-3 rounded-lg" style="background: rgba(34, 197, 94, 0.1)">
+                                <p class="text-green-500 text-xs mb-1 flex items-center gap-1"><i data-lucide="check"
+                                        class="w-3 h-3"></i> 有基本功</p>
+                                <p class="text-sm" style="color: var(--text-primary)">能审查，发现问题</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <p class="text-sm mb-2" style="color: var(--text-secondary)">场景：要描述需求</p>
+                        <div class="grid grid-cols-2 gap-4 mt-3">
+                            <div class="p-3 rounded-lg" style="background: rgba(239, 68, 68, 0.1)">
+                                <p class="text-red-500 text-xs mb-1 flex items-center gap-1"><i data-lucide="x"
+                                        class="w-3 h-3"></i> 没基本功</p>
+                                <p class="text-sm" style="color: var(--text-primary)">说不清，AI 瞎猜</p>
+                            </div>
+                            <div class="p-3 rounded-lg" style="background: rgba(34, 197, 94, 0.1)">
+                                <p class="text-green-500 text-xs mb-1 flex items-center gap-1"><i data-lucide="check"
+                                        class="w-3 h-3"></i> 有基本功</p>
+                                <p class="text-sm" style="color: var(--text-primary)">描述精准，一次到位</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <p class="text-sm mb-2" style="color: var(--text-secondary)">场景：AI 给了 3 个方案</p>
+                        <div class="grid grid-cols-2 gap-4 mt-3">
+                            <div class="p-3 rounded-lg" style="background: rgba(239, 68, 68, 0.1)">
+                                <p class="text-red-500 text-xs mb-1 flex items-center gap-1"><i data-lucide="x"
+                                        class="w-3 h-3"></i> 没基本功</p>
+                                <p class="text-sm" style="color: var(--text-primary)">随便选</p>
+                            </div>
+                            <div class="p-3 rounded-lg" style="background: rgba(34, 197, 94, 0.1)">
+                                <p class="text-green-500 text-xs mb-1 flex items-center gap-1"><i data-lucide="check"
+                                        class="w-3 h-3"></i> 有基本功</p>
+                                <p class="text-sm" style="color: var(--text-primary)">知道选哪个</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 11: Mindset 3 -->
+    <section class="slide" data-slide="10">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-48 h-48 absolute -top-10 -right-10"
+                style="background: var(--primary); opacity: 0.05"></div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div>
+                    <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                        <span class="icon-box w-8 h-8 text-sm">3</span> 心法 3
+                    </p>
+                    <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">问题意识</h2>
+                    <p class="text-lg mb-6" style="color: var(--text-secondary)">规避 > 发现 > 解决</p>
+
+                    <div class="illustration h-40 animate-float">
+                        <div class="text-center">
+                            <div class="icon-box w-16 h-16 mx-auto mb-2"><i data-lucide="search"></i></div>
+                            <p class="font-semibold" style="color: var(--text-primary)">预防胜于治疗</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="feature-card flex items-center gap-4 animate-slide-up"
+                        style="animation-delay: 0.1s; opacity: 0.6">
+                        <div class="icon-box-outline w-12 h-12" style="border-color: #CD7F32; color: #CD7F32"><i
+                                data-lucide="award" class="w-6 h-6"></i></div>
+                        <div>
+                            <p class="font-semibold" style="color: var(--text-primary)">Level 1：解决问题</p>
+                            <p class="text-sm" style="color: var(--text-secondary)">出了 bug，找 AI 帮你修</p>
+                        </div>
+                    </div>
+                    <div class="feature-card flex items-center gap-4 animate-slide-up"
+                        style="animation-delay: 0.2s; opacity: 0.8">
+                        <div class="icon-box-outline w-12 h-12" style="border-color: #C0C0C0; color: #C0C0C0"><i
+                                data-lucide="award" class="w-6 h-6"></i></div>
+                        <div>
+                            <p class="font-semibold" style="color: var(--text-primary)">Level 2：发现问题</p>
+                            <p class="text-sm" style="color: var(--text-secondary)">代码跑之前，就能看出坑</p>
+                        </div>
+                    </div>
+                    <div class="feature-card flex items-center gap-4 animate-slide-up"
+                        style="animation-delay: 0.3s; border: 2px solid var(--primary)">
+                        <div class="icon-box w-12 h-12"><i data-lucide="trophy"></i></div>
+                        <div>
+                            <p class="font-semibold highlight">Level 3：规避问题</p>
+                            <p class="text-sm" style="color: var(--text-secondary)">设计阶段就把坑填了</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card mt-6"
+                        style="border-left: 4px solid #EAB308; background: rgba(234, 179, 8, 0.05)">
+                        <p class="text-yellow-600 text-sm font-medium mb-2 flex items-center gap-2"><i
+                                data-lucide="alert-triangle" class="w-4 h-4"></i> 踩坑故事</p>
+                        <p class="text-sm" style="color: var(--text-secondary)">
+                            AI 写完就跑，并发一上来就崩了。原因：AI 用了全局变量做缓存
+                        </p>
+                        <p class="text-xs mt-2 font-medium" style="color: var(--primary)"><i data-lucide="lightbulb"
+                                class="w-3 h-3 inline"></i> 如果设计阶段就想到并发问题，让 AI 用
+                            Redis，就不会有这事</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 12: Mindset 4 -->
+    <section class="slide" data-slide="11">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-dots w-24 h-24 absolute top-0 right-0 opacity-30"></div>
+
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="icon-box w-8 h-8 text-sm">4</span> 心法 4
+            </p>
+            <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">我与 AI 的自我定位</h2>
+            <p class="text-lg mb-8" style="color: var(--text-secondary)">我是导演，AI 是演员</p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- 插画 -->
+                <div class="flex items-center justify-center">
+                    <img src="https://illustrations.popsy.co/teal/man-riding-a-rocket.svg" alt="Director illustration"
+                        class="w-full max-w-[200px] animate-float illustration-img" loading="lazy"
+                        onerror="this.style.display='none'">
+                </div>
+
+                <div class="feature-card animate-slide-left" style="border-top: 4px solid var(--primary)">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="icon-box"><i data-lucide="user"></i></div>
+                        <h3 class="font-semibold text-lg" style="color: var(--primary)">我负责</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="target" class="w-4 h-4" style="color: var(--primary)"></i>
+                            <span style="color: var(--text-primary)">定方向、定需求</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4" style="color: var(--primary)"></i>
+                            <span style="color: var(--text-primary)">验收、把关质量</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4" style="color: var(--primary)"></i>
+                            <span style="color: var(--text-primary)">做决策</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="briefcase" class="w-4 h-4" style="color: var(--primary)"></i>
+                            <span style="color: var(--text-primary)">理解业务</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-card animate-slide-right" style="border-top: 4px solid #14B8A6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #14B8A6, #0D9488)">🤖</div>
+                        <h3 class="font-semibold text-lg" style="color: #14B8A6">AI 负责</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="code-2" class="w-4 h-4" style="color: #14B8A6"></i>
+                            <span style="color: var(--text-primary)">写代码、查资料</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4" style="color: #14B8A6"></i>
+                            <span style="color: var(--text-primary)">执行、迭代</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="list" class="w-4 h-4" style="color: #14B8A6"></i>
+                            <span style="color: var(--text-primary)">提供选项</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="wrench" class="w-4 h-4" style="color: #14B8A6"></i>
+                            <span style="color: var(--text-primary)">理解技术细节</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feature-card text-center p-6 animate-slide-up delay-300"
+                style="border: 2px solid var(--primary)">
+                <div class="flex items-center justify-center gap-4">
+                    <i data-lucide="clapperboard" class="w-8 h-8" style="color: var(--primary)"></i>
+                    <p class="text-xl" style="color: var(--text-primary)">
+                        不要把自己定位成打字员，要定位成<span class="highlight font-bold">架构师</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 13: Mindset 5 -->
+    <section class="slide" data-slide="12">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-32 h-32 absolute bottom-10 right-10"
+                style="background: var(--primary); opacity: 0.05"></div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div>
+                    <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                        <span class="icon-box w-8 h-8 text-sm">5</span> 心法 5
+                    </p>
+                    <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">IDE 不再是 IDE：干中学</h2>
+                    <p class="text-lg mb-6" style="color: var(--text-secondary)">以前 IDE = 写代码的地方<br>现在 IDE = 和 AI 协作的地方
+                    </p>
+
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <span class="px-4 py-2 feature-card rounded-full text-sm animate-scale"
+                            style="animation-delay: 0.1s; color: var(--text-primary)">Cursor</span>
+                        <span class="px-4 py-2 feature-card rounded-full text-sm animate-scale"
+                            style="animation-delay: 0.2s; color: var(--text-primary)">Windsurf</span>
+                        <span class="px-4 py-2 feature-card rounded-full text-sm animate-scale"
+                            style="animation-delay: 0.3s; color: var(--text-primary)">Claude Code</span>
+                        <span class="px-4 py-2 feature-card rounded-full text-sm animate-scale"
+                            style="animation-delay: 0.4s; border: 2px solid var(--primary); color: var(--primary)">Kiro</span>
+                    </div>
+
+                    <div class="flex justify-center animate-float">
+                        <img src="https://illustrations.popsy.co/teal/student-going-to-school.svg"
+                            alt="Learning illustration" class="w-full max-w-[160px] illustration-img" loading="lazy"
+                            onerror="this.parentElement.innerHTML='<div class=\'icon-box w-16 h-16 mx-auto\'><i data-lucide=\'laptop\'></i></div>'">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="feature-card mb-6">
+                        <h3 class="font-semibold mb-4 flex items-center gap-2" style="color: var(--text-primary)">
+                            <i data-lucide="book-open" class="w-5 h-5" style="color: var(--primary)"></i> 最好的学习方式：干中学
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 0.1s">
+                                <span class="icon-box-outline w-8 h-8 text-sm"><i data-lucide="help-circle"
+                                        class="w-4 h-4"></i></span>
+                                <span style="color: var(--text-primary)">不懂的概念？让 AI 解释</span>
+                            </div>
+                            <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 0.2s">
+                                <span class="icon-box-outline w-8 h-8 text-sm"><i data-lucide="wrench"
+                                        class="w-4 h-4"></i></span>
+                                <span style="color: var(--text-primary)">不会的技术？让 AI 写个 demo</span>
+                            </div>
+                            <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 0.3s">
+                                <span class="icon-box-outline w-8 h-8 text-sm"><i data-lucide="rocket"
+                                        class="w-4 h-4"></i></span>
+                                <span style="color: var(--text-primary)">想学新框架？让 AI 带你做项目</span>
+                            </div>
+                            <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 0.4s">
+                                <span class="icon-box-outline w-8 h-8 text-sm"><i data-lucide="eye"
+                                        class="w-4 h-4"></i></span>
+                                <span style="color: var(--text-primary)">看不懂的代码？让 AI 逐行解释</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card"
+                        style="border-left: 4px solid #22C55E; background: rgba(34, 197, 94, 0.05)">
+                        <p class="text-green-500 text-sm font-medium mb-2 flex items-center gap-2"><i
+                                data-lucide="sparkles" class="w-4 h-4"></i> 成功故事</p>
+                        <p class="text-sm" style="color: var(--text-secondary)">
+                            以前学 Rust，看书看了一周还是懵。后来直接让 AI 带我写一个 CLI 工具，边写边问
+                        </p>
+                        <p class="text-lg mt-2 font-semibold" style="color: #22C55E">3 天就入门了 <i
+                                data-lucide="party-popper" class="w-5 h-5 inline"></i></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 14: Mindset 6 -->
+    <section class="slide" data-slide="13">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-40 h-40 absolute -bottom-10 -left-10"
+                style="background: var(--primary); opacity: 0.05"></div>
+
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="icon-box w-8 h-8 text-sm">6</span> 心法 6
+            </p>
+            <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">Slow is Fast</h2>
+            <p class="text-lg mb-8" style="color: var(--text-secondary)">磨刀不误砍柴工</p>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="feature-card animate-slide-left" style="border-left: 4px solid #EF4444">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(239, 68, 68, 0.1)"><i data-lucide="x"
+                                class="w-5 h-5 text-red-500"></i></span>
+                        <h3 class="text-red-500 font-semibold">常见误区</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(239, 68, 68, 0.1); color: #EF4444"><i data-lucide="x"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-secondary)">上来就让 AI 写代码</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(239, 68, 68, 0.1); color: #EF4444"><i data-lucide="x"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-secondary)">需求没想清楚就开干</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(239, 68, 68, 0.1); color: #EF4444"><i data-lucide="x"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-secondary)">出了问题才想着怎么修</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-card animate-slide-right" style="border-left: 4px solid #22C55E">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(34, 197, 94, 0.1)"><i data-lucide="check"
+                                class="w-5 h-5 text-green-500"></i></span>
+                        <h3 class="text-green-500 font-semibold">正确姿势</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(34, 197, 94, 0.1); color: #22C55E"><i data-lucide="check"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-primary)">先花时间写清楚需求（PRD）</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(34, 197, 94, 0.1); color: #22C55E"><i data-lucide="check"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-primary)">先做技术设计</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(34, 197, 94, 0.1); color: #22C55E"><i data-lucide="check"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-primary)">先规划好实施步骤</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background: rgba(34, 197, 94, 0.1); color: #22C55E"><i data-lucide="check"
+                                    class="w-3 h-3"></i></span>
+                            <span style="color: var(--text-primary)">然后让 AI 按计划执行</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feature-card text-center p-8 animate-slide-up delay-300"
+                style="border: 2px solid var(--primary); background: linear-gradient(135deg, rgba(13, 148, 136, 0.05), rgba(20, 184, 166, 0.02))">
+                <div class="flex items-center justify-center gap-8 flex-wrap">
+                    <div class="stat-card p-4" style="border: none; background: transparent">
+                        <p class="stat-number text-4xl"><span class="count-up" data-target="30">0</span></p>
+                        <p class="text-sm" style="color: var(--text-secondary)">分钟规划</p>
+                    </div>
+                    <div class="text-3xl animate-pulse" style="color: var(--primary)"><i data-lucide="arrow-right"
+                            class="w-8 h-8"></i></div>
+                    <div class="stat-card p-4" style="border: none; background: transparent">
+                        <p class="stat-number text-4xl"><span class="count-up" data-target="3">0</span></p>
+                        <p class="text-sm" style="color: var(--text-secondary)">小时节省</p>
+                    </div>
+                </div>
+                <p class="text-lg mt-4" style="color: var(--text-primary)"><i data-lucide="turtle"
+                        class="w-5 h-5 inline"></i> <span class="highlight font-semibold">慢即是快</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 15: Skills System -->
+    <section class="slide" data-slide="14">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-32 h-32 absolute top-0 right-0" style="background: var(--primary); opacity: 0.05">
+            </div>
+
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="w-2 h-2 rounded-full" style="background: var(--primary)"></span>术篇
+            </p>
+            <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary)">
+                Vibe Coding 的尽头：<span class="highlight">Skills 系统</span>
+            </h2>
+            <p class="text-lg mb-8" style="color: var(--text-secondary)">把你的经验"打包"成 AI 能复用的技能</p>
+
+            <div class="grid md:grid-cols-3 gap-6 items-center">
+                <!-- 左侧：终端卡片 -->
+                <div>
+                    <div class="terminal-card animate-slide-left">
+                        <div class="terminal-header">
+                            <div class="terminal-dot bg-red-500"></div>
+                            <div class="terminal-dot bg-yellow-500"></div>
+                            <div class="terminal-dot bg-green-500"></div>
+                            <span class="text-xs text-gray-400 ml-2">SKILL.md</span>
+                        </div>
+                        <div class="terminal-body text-xs">
+                            <p class="code-comment"># SKILL.md</p>
+                            <p><span class="code-keyword">name:</span> <span
+                                    class="code-string">company-code-style</span></p>
+                            <p><span class="code-keyword">description:</span> <span class="code-string">公司代码规范</span>
+                            </p>
+                            <br>
+                            <p class="code-comment">## 规则</p>
+                            <p><span class="code-number">1.</span> 变量命名用 <span class="code-string">camelCase</span></p>
+                            <p><span class="code-number">2.</span> 函数必须有 <span class="code-string">JSDoc</span> 注释</p>
+                            <p><span class="code-number">3.</span> 错误处理必须用 <span class="code-string">try-catch</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 中间：3D 立方体 -->
+                <div class="flex justify-center">
+                    <div class="cube-container" style="width: 140px; height: 140px;">
+                        <div class="cube" style="--cube-size: 70px;">
+                            <div class="cube-face front" style="width: 140px; height: 140px;"><i data-lucide="package"
+                                    class="w-12 h-12" style="color: var(--primary)"></i></div>
+                            <div class="cube-face back" style="width: 140px; height: 140px;"><i data-lucide="file-code"
+                                    class="w-12 h-12" style="color: var(--primary)"></i></div>
+                            <div class="cube-face right" style="width: 140px; height: 140px;"><i data-lucide="settings"
+                                    class="w-12 h-12" style="color: var(--primary)"></i></div>
+                            <div class="cube-face left" style="width: 140px; height: 140px;"><i data-lucide="layers"
+                                    class="w-12 h-12" style="color: var(--primary)"></i></div>
+                            <div class="cube-face top" style="width: 140px; height: 140px;"><i data-lucide="box"
+                                    class="w-12 h-12" style="color: var(--primary)"></i></div>
+                            <div class="cube-face bottom" style="width: 140px; height: 140px;"><i data-lucide="puzzle"
+                                    class="w-12 h-12" style="color: var(--primary)"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：要点列表 -->
+                <div class="space-y-3">
+                    <div class="feature-card flex items-center gap-3 p-3 animate-slide-up"
+                        style="animation-delay: 0.1s">
+                        <div class="icon-box w-8 h-8 text-sm">1</div>
+                        <p class="text-sm" style="color: var(--text-primary)">你不再是"指挥 AI 写代码"</p>
+                    </div>
+                    <div class="feature-card flex items-center gap-3 p-3 animate-slide-up"
+                        style="animation-delay: 0.2s">
+                        <div class="icon-box w-8 h-8 text-sm">2</div>
+                        <p class="text-sm" style="color: var(--text-primary)">而是"定义 AI 的工作方式"</p>
+                    </div>
+                    <div class="feature-card flex items-center gap-3 p-3 animate-slide-up"
+                        style="animation-delay: 0.3s; border: 2px solid var(--primary)">
+                        <div class="icon-box w-8 h-8 text-sm">3</div>
+                        <p class="text-sm highlight font-semibold">你的经验变成可复用的 AI 技能</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部总结 -->
+            <div class="feature-card p-4 mt-8 text-center animate-scale delay-400 max-w-md mx-auto"
+                style="background: linear-gradient(135deg, rgba(13, 148, 136, 0.1), rgba(20, 184, 166, 0.05))">
+                <p class="text-lg" style="color: var(--text-primary)">
+                    从 <span style="color: var(--text-secondary)">"用 AI"</span> 到 <span class="highlight font-bold">"训
+                        AI"</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 16: Resources -->
+    <section class="slide" data-slide="15">
+        <div class="max-w-5xl mx-auto fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-dots w-24 h-24 absolute bottom-0 left-0 opacity-30"></div>
+
+            <p class="text-sm font-medium flex items-center gap-2 mb-4" style="color: var(--primary)">
+                <span class="w-2 h-2 rounded-full" style="background: var(--primary)"></span>资源
+            </p>
+            <h2 class="text-4xl font-bold mb-8" style="color: var(--text-primary)">实用工具和资源</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <a href="https://github.com/lyfe2025/rbac-admin-pro" target="_blank"
+                    class="feature-card group hover:border-primary transition-all cursor-pointer block animate-slide-up"
+                    style="animation-delay: 0.1s">
+                    <div class="flex items-start gap-4">
+                        <div class="icon-box group-hover:scale-110 transition-transform"><i data-lucide="package"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold mb-1" style="color: var(--text-primary)">rbac-admin-pro</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">Vue 3 + NestJS + Prisma 全栈模板</p>
+                            <p class="text-xs mt-2 flex items-center gap-1" style="color: var(--primary)">完整的 RBAC 权限管理
+                                <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://github.com/KhazP/vibe-coding-prompt-template" target="_blank"
+                    class="feature-card group hover:border-primary transition-all cursor-pointer block animate-slide-up"
+                    style="animation-delay: 0.2s">
+                    <div class="flex items-start gap-4">
+                        <div class="icon-box group-hover:scale-110 transition-transform"><i data-lucide="file-text"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold mb-1" style="color: var(--text-primary)">
+                                vibe-coding-prompt-template</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">5 步工作流提示词模板</p>
+                            <p class="text-xs mt-2 flex items-center gap-1" style="color: var(--primary)">Research <i
+                                    data-lucide="arrow-right" class="w-3 h-3"></i> PRD <i data-lucide="arrow-right"
+                                    class="w-3 h-3"></i> Tech Design</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://github.com/tukuaiai/vibe-coding-cn" target="_blank"
+                    class="feature-card group hover:border-primary transition-all cursor-pointer block animate-slide-up"
+                    style="animation-delay: 0.3s">
+                    <div class="flex items-start gap-4">
+                        <div class="icon-box group-hover:scale-110 transition-transform"><i data-lucide="languages"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold mb-1" style="color: var(--text-primary)">vibe-coding-cn</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">中文指南：环境配置 + 提示词库</p>
+                            <p class="text-xs mt-2 flex items-center gap-1" style="color: var(--primary)">核心理念：规划就是一切 <i
+                                    data-lucide="arrow-right" class="w-3 h-3"></i></p>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://github.com/automata/aicodeguide" target="_blank"
+                    class="feature-card group hover:border-primary transition-all cursor-pointer block animate-slide-up"
+                    style="animation-delay: 0.4s">
+                    <div class="flex items-start gap-4">
+                        <div class="icon-box group-hover:scale-110 transition-transform"><i data-lucide="map"></i></div>
+                        <div>
+                            <h3 class="font-semibold mb-1" style="color: var(--text-primary)">aicodeguide</h3>
+                            <p class="text-sm" style="color: var(--text-secondary)">从零开始的 AI 编程路线图</p>
+                            <p class="text-xs mt-2 flex items-center gap-1" style="color: var(--primary)">新手 <i
+                                    data-lucide="arrow-right" class="w-3 h-3"></i> 有经验 <i data-lucide="arrow-right"
+                                    class="w-3 h-3"></i> 终端党</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="feature-card p-4 mt-8 text-center animate-slide-up delay-500"
+                style="border: 2px dashed var(--border)">
+                <p class="text-sm flex items-center justify-center gap-2" style="color: var(--text-secondary)">
+                    <i data-lucide="lightbulb" class="w-4 h-4" style="color: var(--primary)"></i> 更多资源：<span
+                        style="color: var(--primary)">github.com/anthropics/skills</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 17: Summary -->
+    <section class="slide" data-slide="16">
+        <div class="max-w-5xl mx-auto text-center fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-64 h-64 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style="background: var(--primary); opacity: 0.03"></div>
+
+            <p class="text-sm font-medium mb-4" style="color: var(--primary)">总结</p>
+            <h2 class="text-4xl font-bold mb-8" style="color: var(--text-primary)">核心观点</h2>
+
+            <div class="feature-card p-8 mb-10 animate-scale"
+                style="border: 2px solid var(--primary); background: linear-gradient(135deg, rgba(13, 148, 136, 0.05), rgba(20, 184, 166, 0.02))">
+                <p class="text-2xl leading-relaxed" style="color: var(--text-primary)">
+                    AI 时代，程序员的核心竞争力<br>
+                    不是<span style="color: var(--text-secondary)">"会写代码"</span><br>
+                    而是<span class="highlight font-bold text-3xl">"会管 AI 写代码"</span>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="feature-card p-4 animate-slide-up" style="animation-delay: 0.1s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="target"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">1. 管理思维</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">结果导向，会验货</p>
+                </div>
+                <div class="feature-card p-4 animate-slide-up" style="animation-delay: 0.15s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="dumbbell"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">2. 基本功</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">用来审代码</p>
+                </div>
+                <div class="feature-card p-4 animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="search"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">3. 问题意识</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">规避 > 发现 > 解决</p>
+                </div>
+                <div class="feature-card p-4 animate-slide-up" style="animation-delay: 0.25s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="clapperboard"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">4. 自我定位</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">导演，不是演员</p>
+                </div>
+                <div class="feature-card p-4 animate-slide-up" style="animation-delay: 0.3s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="laptop"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">5. 干中学</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">IDE 是 AI 工作台</p>
+                </div>
+                <div class="feature-card p-4 animate-slide-up" style="animation-delay: 0.35s">
+                    <div class="icon-box w-10 h-10 text-sm mx-auto mb-2"><i data-lucide="turtle"></i></div>
+                    <p class="font-semibold" style="color: var(--text-primary)">6. Slow is Fast</p>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary)">规划先行</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 18: Thank You -->
+    <section class="slide animated-gradient-bg" data-slide="17">
+        <div class="max-w-4xl mx-auto text-center fade-in relative">
+            <!-- Decorative -->
+            <div class="deco-circle w-96 h-96 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style="background: var(--primary); opacity: 0.03"></div>
+            <div class="deco-dots w-32 h-32 absolute top-10 left-10 opacity-20"></div>
+            <div class="deco-dots w-32 h-32 absolute bottom-10 right-10 opacity-20"></div>
+
+            <!-- 粒子效果容器 -->
+            <div id="particles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="flex justify-center mb-6 animate-float">
+                    <img src="https://illustrations.popsy.co/teal/success.svg" alt="Success illustration"
+                        class="w-full max-w-[200px] illustration-img" loading="lazy"
+                        onerror="this.parentElement.innerHTML='<div class=\'icon-box w-20 h-20 mx-auto breathing-glow\'><i data-lucide=\'party-popper\' class=\'w-10 h-10\'></i></div>'">
+                </div>
+
+                <h2 class="text-6xl md:text-8xl font-bold mb-6 animate-bounce-in gradient-title"
+                    style="animation-delay: 0.2s;">谢谢</h2>
+                <p class="text-2xl mb-12 animate-slide-up delay-200" style="color: var(--text-secondary)">欢迎讨论</p>
+
+                <div class="flex justify-center gap-4 flex-wrap animate-slide-up delay-300">
+                    <span class="px-5 py-2 feature-card rounded-full text-sm tag-float ripple cursor-pointer"
+                        style="color: var(--text-primary)">#AI编程</span>
+                    <span class="px-5 py-2 feature-card rounded-full text-sm tag-float ripple cursor-pointer"
+                        style="color: var(--text-primary); animation-delay: 0.2s">#VibeCoding</span>
+                    <span class="px-5 py-2 feature-card rounded-full text-sm tag-float ripple cursor-pointer"
+                        style="color: var(--text-primary); animation-delay: 0.4s">#程序员进化</span>
+                    <span
+                        class="px-5 py-2 feature-card rounded-full text-sm tag-float ripple cursor-pointer border-flow"
+                        style="border: 2px solid var(--primary); color: var(--primary); animation-delay: 0.6s">#Kiro</span>
+                </div>
+
+                <div class="mt-12 animate-slide-up delay-400">
+                    <p class="text-sm flex items-center justify-center gap-2" style="color: var(--text-secondary)">
+                        <i data-lucide="lightbulb" class="w-4 h-4 animate-pulse" style="color: var(--primary)"></i>
+                        记住：<span class="highlight font-semibold underline-animation">从"写代码"到"管代码"</span>
+                    </p>
+                </div>
+
+                <!-- 社交链接 -->
+                <div class="mt-8 flex justify-center gap-6 animate-slide-up delay-500">
+                    <a href="https://github.com/lyfe2025" target="_blank"
+                        class="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg"
+                        style="background: var(--surface); border: 1px solid var(--border);">
+                        <i data-lucide="github" class="w-5 h-5" style="color: var(--text-primary)"></i>
+                    </a>
+                    <a href="mailto:wuweixiang.alex@gmail.com"
+                        class="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg"
+                        style="background: var(--surface); border: 1px solid var(--border);">
+                        <i data-lucide="mail" class="w-5 h-5" style="color: var(--text-primary)"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize
+        const slides = document.querySelectorAll('.slide');
+        const navDotsContainer = document.getElementById('navDots');
+        const progressBar = document.getElementById('progressBar');
+        const currentSlideNum = document.getElementById('currentSlideNum');
+        const totalSlidesEl = document.getElementById('totalSlides');
+        let currentSlide = 0;
+
+        totalSlidesEl.textContent = slides.length;
+
+        // Slide titles for tooltips
+        const slideTitles = [
+            'AI 时代的编程心法', '真实故事', '重点是什么？', 'Vibe Coding',
+            '破除误区', '开发生命周期', '6 个核心心法', '心法 1：管理思维',
+            '心法 2：基本功', '心法 3：问题意识', '心法 4：自我定位',
+            '心法 5：干中学', '心法 6：Slow is Fast', 'Skills 系统',
+            '实用资源', '总结', '谢谢'
+        ];
+
+        // Create navigation dots with titles
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+            dot.setAttribute('data-title', slideTitles[i] || `第 ${i + 1} 页`);
+            dot.onclick = () => goToSlide(i);
+            navDotsContainer.appendChild(dot);
+        });
+
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        // Initialize first slide as active
+        slides[0].classList.add('active');
+
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        // Section indicator
+        const sectionIndicator = document.getElementById('sectionIndicator');
+        const sectionName = document.getElementById('sectionName');
+
+        function updateActiveSlide() {
+            const scrollPos = window.scrollY + window.innerHeight / 2;
+            slides.forEach((slide, i) => {
+                const top = slide.offsetTop;
+                const bottom = top + slide.offsetHeight;
+                const isActive = scrollPos >= top && scrollPos < bottom;
+                slide.classList.toggle('active', isActive);
+                if (isActive) {
+                    currentSlide = i;
+                    currentSlideNum.textContent = i + 1;
+                    navDots.forEach((dot, j) => {
+                        dot.classList.toggle('active', i === j);
+                    });
+                    // Update section indicator
+                    sectionName.textContent = slideTitles[i] || `第 ${i + 1} 页`;
+                }
+            });
+        }
+
+        function goToSlide(index) {
+            slides[index].scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Fullscreen toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.body.classList.add('is-fullscreen');
+            } else {
+                document.exitFullscreen();
+                document.body.classList.remove('is-fullscreen');
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            document.body.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+        });
+
+        // Count-up animation
+        function animateCountUp(el) {
+            const target = parseInt(el.dataset.target);
+            const duration = 1500;
+            const start = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(target * easeOut);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Intersection Observer for fade-in animations and count-up
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Trigger count-up for numbers in this slide
+                    entry.target.querySelectorAll('.count-up').forEach(el => {
+                        if (!el.dataset.animated) {
+                            el.dataset.animated = 'true';
+                            animateCountUp(el);
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                e.preventDefault();
+                if (currentSlide > 0) goToSlide(currentSlide - 1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(slides.length - 1);
+            } else if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            } else if (e.key === 'g' || e.key === 'G') {
+                e.preventDefault();
+                toggleThumbnailGrid();
+            } else if (e.key === 'b' || e.key === 'B') {
+                e.preventDefault();
+                toggleBlackout();
+            } else if (e.key === 't' || e.key === 'T') {
+                e.preventDefault();
+                handleTimerKey();
+            } else if (e.key === 'm' || e.key === 'M') {
+                e.preventDefault();
+                toggleTheme();
+            } else if (e.key === 'd' || e.key === 'D') {
+                e.preventDefault();
+                toggleDrawingMode();
+            } else if (e.key === 'c' || e.key === 'C') {
+                // 快速清除画布
+                if (isDrawingMode) {
+                    e.preventDefault();
+                    ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                }
+            } else if (e.key === '?' || e.key === '/') {
+                e.preventDefault();
+                toggleShortcuts();
+            } else if (e.key === 'Escape') {
+                closeThumbnailGrid();
+                closeShortcuts();
+                if (blackout.classList.contains('active')) toggleBlackout();
+                if (isDrawingMode) toggleDrawingMode();
+            }
+        });
+
+        // Shortcuts overlay
+        const shortcutsOverlay = document.getElementById('shortcutsOverlay');
+        const shortcutsClose = document.getElementById('shortcutsClose');
+
+        function toggleShortcuts() {
+            shortcutsOverlay.classList.toggle('active');
+        }
+
+        function closeShortcuts() {
+            shortcutsOverlay.classList.remove('active');
+        }
+
+        shortcutsClose.addEventListener('click', closeShortcuts);
+        shortcutsOverlay.addEventListener('click', (e) => {
+            if (e.target === shortcutsOverlay) closeShortcuts();
+        });
+
+        // Show shortcuts on first visit
+        if (!localStorage.getItem('shortcutsShown')) {
+            setTimeout(() => {
+                toggleShortcuts();
+                localStorage.setItem('shortcutsShown', 'true');
+            }, 1500);
+        }
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        let isDark = localStorage.getItem('theme') === 'dark';
+
+        function applyTheme() {
+            document.documentElement.classList.toggle('dark', isDark);
+            themeToggle.innerHTML = isDark ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            isDark = !isDark;
+            applyTheme();
+        }
+
+        // Initialize theme
+        applyTheme();
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // Timer with localStorage persistence
+        const timerEl = document.getElementById('timer');
+        let timerInterval = null;
+        let timerSeconds = parseInt(localStorage.getItem('ppt_timer_seconds') || '0');
+        let timerVisible = localStorage.getItem('ppt_timer_visible') === 'true';
+        let timerStartTime = localStorage.getItem('ppt_timer_start');
+
+        // Restore timer state on load
+        if (timerStartTime && timerVisible) {
+            // Calculate elapsed time since last save
+            const elapsed = Math.floor((Date.now() - parseInt(timerStartTime)) / 1000);
+            timerSeconds += elapsed;
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const secs = (timerSeconds % 60).toString().padStart(2, '0');
+            timerEl.textContent = `${mins}:${secs}`;
+        }
+
+        function saveTimerState() {
+            localStorage.setItem('ppt_timer_seconds', timerSeconds.toString());
+            localStorage.setItem('ppt_timer_visible', timerVisible.toString());
+            localStorage.setItem('ppt_timer_start', Date.now().toString());
+        }
+
+        // Initialize display if timer was running
+        if (timerVisible) {
+            updateTimerDisplay();
+            timerEl.classList.add('visible');
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                updateTimerDisplay();
+                saveTimerState();
+            }, 1000);
+        }
+
+        function toggleTimer() {
+            timerVisible = !timerVisible;
+            timerEl.classList.toggle('visible', timerVisible);
+            if (timerVisible && !timerInterval) {
+                timerInterval = setInterval(() => {
+                    timerSeconds++;
+                    updateTimerDisplay();
+                    saveTimerState();
+                }, 1000);
+            }
+            saveTimerState();
+        }
+
+        // Reset timer with double-press T (within 500ms)
+        let lastTPress = 0;
+        function handleTimerKey() {
+            const now = Date.now();
+            if (now - lastTPress < 500) {
+                // Double press - reset timer
+                timerSeconds = 0;
+                updateTimerDisplay();
+                saveTimerState();
+                lastTPress = 0;
+            } else {
+                lastTPress = now;
+                toggleTimer();
+            }
+        }
+
+        // Blackout
+        const blackout = document.getElementById('blackout');
+        function toggleBlackout() {
+            blackout.classList.toggle('active');
+        }
+
+        // Thumbnail Grid
+        const thumbnailGrid = document.getElementById('thumbnailGrid');
+        const thumbnailGridInner = document.getElementById('thumbnailGridInner');
+
+        // Build thumbnail grid (reuse slideTitles from above)
+        slides.forEach((_, i) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'thumbnail' + (i === currentSlide ? ' current' : '');
+            thumb.innerHTML = `<div class="num">${i + 1}</div><div class="title">${slideTitles[i] || ''}</div>`;
+            thumb.onclick = () => {
+                goToSlide(i);
+                closeThumbnailGrid();
+            };
+            thumbnailGridInner.appendChild(thumb);
+        });
+
+        function toggleThumbnailGrid() {
+            thumbnailGrid.classList.toggle('active');
+            if (thumbnailGrid.classList.contains('active')) {
+                document.querySelectorAll('.thumbnail').forEach((t, i) => {
+                    t.classList.toggle('current', i === currentSlide);
+                });
+            }
+        }
+
+        function closeThumbnailGrid() {
+            thumbnailGrid.classList.remove('active');
+        }
+
+        // Step reveal (press Enter or click to reveal next item)
+        let stepContainers = {};
+        document.querySelectorAll('.step-container').forEach(container => {
+            const group = container.dataset.stepGroup;
+            const items = container.querySelectorAll('.step-item');
+            stepContainers[group] = { items: Array.from(items), currentIndex: 0, revealed: false };
+        });
+
+        // Auto-reveal steps when slide becomes visible
+        const stepObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const container = entry.target;
+                    const group = container.dataset.stepGroup;
+                    if (stepContainers[group] && !stepContainers[group].revealed) {
+                        stepContainers[group].revealed = true;
+                        stepContainers[group].items.forEach((item, i) => {
+                            setTimeout(() => item.classList.add('revealed'), i * 300);
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.step-container').forEach(el => stepObserver.observe(el));
+
+        // Drawing functionality
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const drawingToolbar = document.getElementById('drawingToolbar');
+        const ctx = drawingCanvas.getContext('2d');
+        let isDrawing = false;
+        let isDrawingMode = false;
+        let drawColor = '#FF0000';
+        let drawWidth = 3;
+
+        function resizeCanvas() {
+            drawingCanvas.width = window.innerWidth;
+            drawingCanvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function toggleDrawingMode() {
+            isDrawingMode = !isDrawingMode;
+            drawingCanvas.classList.toggle('active', isDrawingMode);
+            drawingToolbar.classList.toggle('active', isDrawingMode);
+        }
+
+        // Color buttons
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                drawColor = btn.dataset.color;
+            });
+        });
+
+        // Pen size buttons
+        document.getElementById('penThin').addEventListener('click', function () {
+            drawWidth = 3;
+            this.classList.add('active');
+            document.getElementById('penThick').classList.remove('active');
+        });
+        document.getElementById('penThick').addEventListener('click', function () {
+            drawWidth = 8;
+            this.classList.add('active');
+            document.getElementById('penThin').classList.remove('active');
+        });
+
+        // Clear and close
+        document.getElementById('clearDrawing').addEventListener('click', () => {
+            ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        });
+        document.getElementById('closeDrawing').addEventListener('click', toggleDrawingMode);
+
+        // Drawing events
+        drawingCanvas.addEventListener('mousedown', (e) => {
+            if (!isDrawingMode) return;
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.clientX, e.clientY);
+            ctx.strokeStyle = drawColor;
+            ctx.lineWidth = drawWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        });
+
+        drawingCanvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+        });
+
+        drawingCanvas.addEventListener('mouseup', () => isDrawing = false);
+        drawingCanvas.addEventListener('mouseleave', () => isDrawing = false);
+
+        // Touch support for drawing
+        drawingCanvas.addEventListener('touchstart', (e) => {
+            if (!isDrawingMode) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX, touch.clientY);
+            ctx.strokeStyle = drawColor;
+            ctx.lineWidth = drawWidth;
+            ctx.lineCap = 'round';
+        });
+
+        drawingCanvas.addEventListener('touchmove', (e) => {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            ctx.lineTo(touch.clientX, touch.clientY);
+            ctx.stroke();
+        });
+
+        drawingCanvas.addEventListener('touchend', () => isDrawing = false);
+
+        // ========== 增强交互效果 ==========
+
+        // 1. 滚动触发动画 - 更精细的控制
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    // 为子元素添加交错动画
+                    const staggerItems = entry.target.querySelectorAll('.stagger-item');
+                    staggerItems.forEach((item, i) => {
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, i * 100);
+                    });
+                }
+            });
+        }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
+
+        // 2. 卡片悬停 3D 倾斜效果
+        document.querySelectorAll('.card-3d').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // 3. 数字计数动画增强 - 带高亮效果
+        function animateCountUpEnhanced(el) {
+            const target = parseInt(el.dataset.target);
+            const duration = 1500;
+            const start = performance.now();
+            el.classList.add('counting');
+
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(target * easeOut);
+                el.textContent = current;
+
+                // 数字变化时添加弹跳效果
+                if (current !== parseInt(el.dataset.lastValue || 0)) {
+                    el.classList.add('number-pop');
+                    setTimeout(() => el.classList.remove('number-pop'), 100);
+                    el.dataset.lastValue = current;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.classList.remove('counting');
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // 4. 进度条动画
+        const progressObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.progress-animate').forEach(el => progressObserver.observe(el));
+
+        // 5. 涟漪点击效果
+        document.querySelectorAll('.ripple').forEach(el => {
+            el.addEventListener('click', function (e) {
+                const rect = this.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${e.clientX - rect.left - size / 2}px;
+                    top: ${e.clientY - rect.top - size / 2}px;
+                    background: rgba(13, 148, 136, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: rippleEffect 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // 添加涟漪动画样式
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+            @keyframes rippleEffect {
+                to { transform: scale(2); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(rippleStyle);
+
+        // 6. 连接线动画
+        const connectorObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('connected');
+                    }, 300);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.connector-line').forEach(el => connectorObserver.observe(el));
+
+        // 7. 鼠标跟随光效
+        const slides_with_glow = document.querySelectorAll('.slide');
+        slides_with_glow.forEach(slide => {
+            slide.addEventListener('mousemove', (e) => {
+                const rect = slide.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                slide.style.setProperty('--mouse-x', `${x}px`);
+                slide.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // 8. 滚动进度指示器动画
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            const direction = st > lastScrollTop ? 'down' : 'up';
+            lastScrollTop = st <= 0 ? 0 : st;
+
+            // 根据滚动方向添加微妙的视差效果
+            document.querySelectorAll('.animate-float').forEach(el => {
+                const speed = direction === 'down' ? 2 : -2;
+                el.style.transform = `translateY(${speed}px)`;
+                setTimeout(() => {
+                    el.style.transform = '';
+                }, 100);
+            });
+        }, { passive: true });
+
+        // 9. 卡片入场序列动画
+        function animateCardsSequence(container) {
+            const cards = container.querySelectorAll('.feature-card, .stat-card');
+            cards.forEach((card, i) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, i * 100);
+            });
+        }
+
+        // 10. 为 feature-card 添加悬停效果类
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.classList.add('hover-lift', 'shine-effect');
+        });
+
+        // 11. 为 stat-card 添加呼吸灯效果
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('breathing-glow');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('breathing-glow');
+            });
+        });
+
+        // 12. 标签浮动效果
+        document.querySelectorAll('.rounded-full').forEach((tag, i) => {
+            if (tag.classList.contains('feature-card') || tag.closest('.flex')) {
+                tag.classList.add('tag-float');
+                tag.style.animationDelay = `${i * 0.2}s`;
+            }
+        });
+
+        // 13. 图标悬停弹跳
+        document.querySelectorAll('.icon-box').forEach(icon => {
+            const parent = icon.closest('.feature-card, .stat-card, div');
+            if (parent) {
+                parent.classList.add('icon-bounce');
+            }
+        });
+
+        // 14. 幻灯片切换时的 3D 过渡效果
+        const originalGoToSlide = goToSlide;
+        goToSlide = function (index) {
+            if (index === currentSlide) return;
+
+            const direction = index > currentSlide ? 'down' : 'up';
+            const currentSlideEl = slides[currentSlide];
+            const nextSlideEl = slides[index];
+
+            // 当前页退出动画
+            currentSlideEl.classList.add(direction === 'down' ? 'slide-exit-up' : 'slide-exit-down');
+
+            // 新页面准备入场
+            nextSlideEl.classList.add(direction === 'down' ? 'slide-enter-from-bottom' : 'slide-enter-from-top');
+            nextSlideEl.style.opacity = '0';
+
+            // 调用原始函数滚动
+            originalGoToSlide(index);
+
+            // 延迟后触发入场动画
+            setTimeout(() => {
+                currentSlideEl.classList.remove('slide-exit-up', 'slide-exit-down');
+                nextSlideEl.classList.remove('slide-enter-from-bottom', 'slide-enter-from-top');
+                nextSlideEl.style.opacity = '';
+
+                // 触发新幻灯片的入场动画
+                animateCardsSequence(nextSlideEl);
+            }, 100);
+        };
+
+        // 15. 键盘导航视觉反馈
+        document.addEventListener('keydown', (e) => {
+            if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' '].includes(e.key)) {
+                // 添加导航点脉冲效果
+                const activeDot = document.querySelector('.nav-dot.active');
+                if (activeDot) {
+                    activeDot.style.transform = 'scale(1.5)';
+                    setTimeout(() => {
+                        activeDot.style.transform = '';
+                    }, 200);
+                }
+            }
+        });
+
+        // Touch swipe support
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndY = e.changedTouches[0].screenY;
+            const diff = touchStartY - touchEndY;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentSlide < slides.length - 1) {
+                    goToSlide(currentSlide + 1);
+                } else if (diff < 0 && currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+        }, { passive: true });
+
+        // Scroll events
+        window.addEventListener('scroll', () => {
+            updateProgress();
+            updateActiveSlide();
+        });
+
+        // Initial state
+        updateProgress();
+        document.querySelector('.fade-in').classList.add('visible');
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Typewriter effect for subtitle (循环播放)
+        const typewriterText = document.getElementById('typewriterText');
+        const fullText = '从 "写代码" 到 "管代码"';
+        let charIndex = fullText.length; // 从完整文字开始
+        let isDeleting = false;
+
+        function getHighlightedText(text) {
+            // 处理正在打字中的部分匹配，让引号内的内容始终高亮
+            // "写代码" 从位置 2 开始，"管代码" 从位置 10 开始
+            let result = '';
+            let i = 0;
+            while (i < text.length) {
+                if (text[i] === '"') {
+                    // 找到引号，开始高亮
+                    let end = text.indexOf('"', i + 1);
+                    if (end === -1) end = text.length; // 还没打完闭合引号
+                    result += '<span class="highlight">' + text.substring(i, end + 1) + '</span>';
+                    i = end + 1;
+                } else {
+                    result += text[i];
+                    i++;
+                }
+            }
+            return result;
+        }
+
+        function typeWriter() {
+            const typingSpeed = 120;
+            const deletingSpeed = 50;
+            const pauseAfterComplete = 2500;
+            const pauseAfterDelete = 800;
+
+            if (!isDeleting) {
+                // 打字阶段
+                if (charIndex <= fullText.length) {
+                    const currentText = fullText.substring(0, charIndex);
+                    typewriterText.innerHTML = getHighlightedText(currentText);
+                    charIndex++;
+                    setTimeout(typeWriter, typingSpeed);
+                } else {
+                    // 打完了，暂停后开始删除
+                    setTimeout(() => {
+                        isDeleting = true;
+                        typeWriter();
+                    }, pauseAfterComplete);
+                }
+            } else {
+                // 删除阶段
+                if (charIndex > 0) {
+                    charIndex--;
+                    const currentText = fullText.substring(0, charIndex);
+                    typewriterText.innerHTML = getHighlightedText(currentText);
+                    setTimeout(typeWriter, deletingSpeed);
+                } else {
+                    // 删完了，暂停后重新开始打字
+                    isDeleting = false;
+                    setTimeout(typeWriter, pauseAfterDelete);
+                }
+            }
+        }
+
+        // Start typewriter - 初始显示完整文字，2.5秒后开始循环动画
+        setTimeout(() => {
+            isDeleting = true;
+            typeWriter();
+        }, pauseAfterComplete = 2500);
+
+        // ========== 感谢页面粒子效果 ==========
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+
+            const colors = ['#0D9488', '#14B8A6', '#0EA5E9', '#FACC15'];
+
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                const size = Math.random() * 8 + 4;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                particle.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${color};
+                    border-radius: 50%;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    opacity: ${Math.random() * 0.5 + 0.2};
+                    animation: particleFloat ${Math.random() * 10 + 10}s ease-in-out infinite;
+                    animation-delay: ${Math.random() * 5}s;
+                `;
+                container.appendChild(particle);
+            }
+        }
+
+        // 添加粒子动画样式
+        const particleStyle = document.createElement('style');
+        particleStyle.textContent = `
+            @keyframes particleFloat {
+                0%, 100% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+                25% {
+                    transform: translate(20px, -30px) rotate(90deg);
+                }
+                50% {
+                    transform: translate(-10px, -50px) rotate(180deg);
+                }
+                75% {
+                    transform: translate(-30px, -20px) rotate(270deg);
+                }
+            }
+        `;
+        document.head.appendChild(particleStyle);
+
+        // 当滚动到最后一页时创建粒子
+        const lastSlideObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    createParticles();
+                    lastSlideObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const lastSlide = document.querySelector('[data-slide="16"]');
+        if (lastSlide) {
+            lastSlideObserver.observe(lastSlide);
+        }
+
+        // ========== 鼠标跟随光晕效果 ==========
+        const cursorGlow = document.createElement('div');
+        cursorGlow.style.cssText = `
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+            opacity: 0;
+        `;
+        document.body.appendChild(cursorGlow);
+
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+            cursorGlow.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursorGlow.style.opacity = '0';
+        });
+
+        // ========== 首页星空隧道效果 ==========
+        (function initStarfield() {
+            const canvas = document.getElementById('starfield');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let stars = [];
+            const numStars = 200;
+            let animationId;
+
+            function resize() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < numStars; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width - canvas.width / 2,
+                        y: Math.random() * canvas.height - canvas.height / 2,
+                        z: Math.random() * canvas.width,
+                        size: Math.random() * 2 + 0.5
+                    });
+                }
+            }
+
+            function draw() {
+                const isDark = document.documentElement.classList.contains('dark');
+                ctx.fillStyle = isDark ? 'rgba(11, 11, 16, 0.2)' : 'rgba(248, 250, 251, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+                const primaryColor = isDark ? '20, 184, 166' : '13, 148, 136';
+
+                for (let star of stars) {
+                    star.z -= 2;
+
+                    if (star.z <= 0) {
+                        star.x = Math.random() * canvas.width - cx;
+                        star.y = Math.random() * canvas.height - cy;
+                        star.z = canvas.width;
+                    }
+
+                    const sx = (star.x / star.z) * canvas.width + cx;
+                    const sy = (star.y / star.z) * canvas.height + cy;
+                    const size = (1 - star.z / canvas.width) * star.size * 3;
+                    const opacity = (1 - star.z / canvas.width) * 0.8;
+
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${primaryColor}, ${opacity})`;
+                    ctx.fill();
+
+                    // 拖尾效果
+                    const tailLength = size * 8;
+                    const gradient = ctx.createLinearGradient(sx, sy, sx - (star.x / star.z) * tailLength, sy - (star.y / star.z) * tailLength);
+                    gradient.addColorStop(0, `rgba(${primaryColor}, ${opacity * 0.5})`);
+                    gradient.addColorStop(1, 'transparent');
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = size * 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(sx - (star.x / star.z) * tailLength, sy - (star.y / star.z) * tailLength);
+                    ctx.stroke();
+                }
+
+                animationId = requestAnimationFrame(draw);
+            }
+
+            // 只在首页时运行动画
+            const firstSlideObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (!animationId) draw();
+                    } else {
+                        if (animationId) {
+                            cancelAnimationFrame(animationId);
+                            animationId = null;
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            const firstSlide = document.querySelector('[data-slide="0"]');
+            if (firstSlide) {
+                firstSlideObserver.observe(firstSlide);
+            }
+
+            window.addEventListener('resize', () => {
+                resize();
+                initStars();
+            });
+
+            resize();
+            initStars();
+        })();
+    </script>
+</body>
+
+</html>
